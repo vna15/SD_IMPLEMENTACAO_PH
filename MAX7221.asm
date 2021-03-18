@@ -1,6 +1,6 @@
 ;
 ; ProgramadorHorárioSD.asm
-;
+; Código do MAX7221
 ; Created: 17/03/2021 16:55:26
 ; Author : vnaze
 ;
