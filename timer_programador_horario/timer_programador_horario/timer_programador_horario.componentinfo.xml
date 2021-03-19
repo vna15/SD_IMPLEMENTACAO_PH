@@ -41,7 +41,7 @@
 					<Attribute>template</Attribute>
 					<Category>source</Category>
 					<Condition>AVRASM</Condition>
-					<FileContentHash>wnPs/ZgXAu4oUAzwM4oyLg==</FileContentHash>
+					<FileContentHash>RslgvLbzf9sSx6ZBRVh0+A==</FileContentHash>
 					<FileVersion></FileVersion>
 					<Name>avrasm/templates/main.asm</Name>
 					<SelectString>Main file (.asm)</SelectString>

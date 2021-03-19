@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.8  C:\Users\lucas\Documents\Atmel Studio\7.0\teste_portas_analógicas\teste_portas_analógicas\main.asm Mon Mar 08 21:55:02 2021
+AVRASM ver. 2.2.8  C:\Users\lucas\Documents\Atmel Studio\7.0\timer_programador_horario\timer_programador_horario\main.asm Fri Mar 19 13:27:50 2021
 
 
 EQU  SIGNATURE_000 0000001e
@@ -695,15 +695,6 @@ EQU  ACIaddr      0000002e
 EQU  TWIaddr      00000030
 EQU  SPMRaddr     00000032
 EQU  INT_VECTORS_SIZE 00000034
-CSEG start        00000000
-CSEG clear_registradores 00000041
-CSEG loop_adc     0000000a
-CSEG continue     0000000f
-CSEG conversao_999 00000019
-CSEG final        0000004a
-CSEG limitador    0000002d
-CSEG soma_low     0000003c
-CSEG soma_high    0000003e
-CSEG soma         00000024
-CSEG soma_dezena  00000035
-CSEG soma_centena 00000039
+CSEG main         00000018
+CSEG TIMER1_COMPA 0000002d
+CSEG wait         0000002b

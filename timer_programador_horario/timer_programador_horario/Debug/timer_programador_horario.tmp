@@ -1,0 +1,30 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.2.8</VERSION>
+ <DEVICE>"ATmega328P"</DEVICE>
+ <WORKING_DIR>C:\Users\lucas\Documents\Atmel Studio\7.0\timer_programador_horario\timer_programador_horario\Debug</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc</DIR>
+  <DIR>C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avrassembler\Include</DIR>
+  <DIR></DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>C:\Users\lucas\Documents\Atmel Studio\7.0\timer_programador_horario\timer_programador_horario\main.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc\m328Pdef.inc</FILE>
+  <FILE>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc\m328pdef.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>C:\Users\lucas\Documents\Atmel Studio\7.0\timer_programador_horario\timer_programador_horario\Debug\timer_programador_horario.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>timer_programador_horario.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>timer_programador_horario.map</FILE>
+  <FILE>timer_programador_horario.lss</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <main><FILE>C:\Users\lucas\Documents\Atmel Studio\7.0\timer_programador_horario\timer_programador_horario\main.asm</FILE><LINE>11</LINE></main>
+  <TIMER1_COMPA><FILE>C:\Users\lucas\Documents\Atmel Studio\7.0\timer_programador_horario\timer_programador_horario\main.asm</FILE><LINE>31</LINE></TIMER1_COMPA>
+  <wait><FILE>C:\Users\lucas\Documents\Atmel Studio\7.0\timer_programador_horario\timer_programador_horario\main.asm</FILE><LINE>27</LINE></wait>
+ </LABELS>
+</ASSEMBLER_INFO>

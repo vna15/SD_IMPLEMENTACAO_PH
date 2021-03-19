@@ -1,10 +1,12 @@
 
-AVRASM ver. 2.2.8  C:\Users\lucas\Documents\Atmel Studio\7.0\teste_portas_anal�gicas\teste_portas_anal�gicas\main.asm Mon Mar 08 21:55:02 2021
+AVRASM ver. 2.2.8  C:\Users\lucas\Documents\Atmel Studio\7.0\timer_programador_horario\timer_programador_horario\main.asm Fri Mar 19 13:27:50 2021
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc\m328Pdef.inc'
+C:\Users\lucas\Documents\Atmel Studio\7.0\timer_programador_horario\timer_programador_horario\main.asm(7): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc\m328pdef.inc'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc\m328Pdef.inc'
+C:\Users\lucas\Documents\Atmel Studio\7.0\timer_programador_horario\timer_programador_horario\main.asm(7): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc\m328pdef.inc'
                                  
-                                 
+                                 ;
                                  
                                  ;***** Created: 2011-02-09 12:03 ******* Source: ATmega328P.xml **********
                                  ;*************************************************************************
@@ -985,89 +987,83 @@ AVRASM ver. 2.2.8  C:\Users\lucas\Documents\Atmel Studio\7.0\teste_portas_anal�g
                                  
                                  ; ***** END OF FILE ******************************************************
                                  
+                                 ; timer_programador_horario.asm
+                                 ;
+                                 ; Created: 18/03/2021 10:23:24
+                                 ; Author : lucas
+                                 ;
+                                 .include "m328pdef.inc"
                                  
-                                 start:
-000000 e400                      	ldi r16, (1 << REFS0)  ; setando referencia de conversão e referencia ADC4
-000001 9300 007c                 	sts ADMUX, r16						 
-000003 e013                      	ldi r17, (1 << ADPS1) | (1 << ADPS0)  ; divisão por 8
-000004 9310 007a                 	sts ADCSRA, r17	 
-000006 6c10                      	ori r17, (1 << ADEN) | (1 << ADSC) 
-000007 9310 007a                 	sts ADCSRA, r17
-000009 d037                      	rcall clear_registradores  ; chamada do clear dos r17 até r23
-                                 loop_adc:
-00000a 9140 007a                 	lds r20, ADCSRA ; copiando o reg ADCSRA
-00000c fd44                      	sbrc r20, ADIF  ; checando se o ADIF está setado
-00000d c001                      	rjmp continue	; pula para o continue caso esteja setado o ADIF
-00000e cffb                      	rjmp loop_adc	; colta para o loop caso contrário
-                                 continue:
-00000f 91b0 0078                 	lds r27, ADCL	; copia o LOW para o r27
-000011 91c0 0079                 	lds r28, ADCH	; copia o HIGH para o r28
-000013 e09a                      	ldi r25, 10		; regista 10
-000014 e0a1                      	ldi r26, 1		; registra 1
-000015 efdf                      	ldi r29, 255	; registra 255 para o estou do contador geral
-000016 eeef                      	ldi r30, 0xEF	; registra o LOW do 999
-000017 e0f3                      	ldi r31, 0x03	; registra o HIGH do 999
-000018 d028                      	rcall clear_registradores
-                                 conversao_999:
-000019 e080                      	ldi r24, 0x00	; zera r24
-00001a 13b1                      	cpse r27, r17	; compara LOW(ADC), LOW(GERAL)
-00001b 9601                      	adiw r24, 1		; se for diferente soma 1
-00001c 13c7                      	cpse r28, r23	; compara HIGH(ADC), HIGH(GERAL)
-00001d 9601                      	adiw r24, 1		; se for diferente soma 1
-00001e 3080                          cpi r24, 0		; compara r24 com zero
-00001f f151                      	breq final		; se for igual ele vai para o final do processo
-000020 d00c                      	rcall limitador	; chamada da checagem do limitador, se for igual a 999 ele sai
-000021 131d                      	cpse r17, r29	; compara LOW(GERAL), 0xFF
-000022 c019                      	rjmp soma_low	; se o reg GERAL não for 255 ele soma no reg r17
-000023 c01a                      	rjmp soma_high	; se o reg GERAL for 0xFF ele soma no reg r23
-                                 soma:
-000024 0f2a                      	add r18, r26	; acrescenta reg LOCAL com 1
-000025 2f32                      	mov r19, r18	; move reg LOCAL para reg UNIDADES 
-000026 1329                      	cpse r18, r25	; compara reg LOCAL com 10
-000027 cff1                      	rjmp conversao_999	; se não for volta para o inicio do processo
-000028 d00c                      	rcall soma_dezena	; se for ele soma dezena
-000029 1349                      	cpse r20, r25	; compara DEZENAS, 10
-00002a cfee                      	rjmp conversao_999	; se não for volta para o inicio do processo
-00002b d00d                      	rcall soma_centena	; se for ele soma centenas
-00002c cfec                      	rjmp conversao_999	; volta para o início do processo
-                                 limitador:
-00002d e080                      	ldi r24, 0x00	; zera r24
-00002e 131e                      	cpse r17, r30	; compara LOW(GERAL), LOW 999
-00002f 9601                      	adiw r24, 1		; se for diferente soma 1
-000030 137f                      	cpse r23, r31	; compara HIGH(GERAL), HIGH 999
-000031 9601                      	adiw r24, 1		; se for diferente soma 1
-000032 3080                      	cpi r24, 0		; compara r24 com zero
-000033 f0b1                      	breq final		; se for igual ele vai para o final do processo
-000034 9508                      	ret
+                                 ;***** Created: 2011-02-09 12:03 ******* Source: ATmega328P.xml **********
+                                 ;*************************************************************************
+                                 ;* A P P L I C A T I O N   N O T E   F O R   T H E   A V R   F A M I L Y
+                                 ;* 
+                                 ;* Number            : AVR000
+                                 ;* File Name         : "m328Pdef.inc"
+                                 ;* Title             : Register/Bit Definitions for the ATmega328P
+                                 ;* Date              : 2011-02-09
+                                 ;* Version           : 2.35
+                                 ;* Support E-mail    : avr@atmel.com
+                                 ;* Target MCU        : ATmega328P
+                                 ;* 
+                                 ;* DESCRIPTION
+                                 ;* When including this file in the assembly program file, all I/O register 
+                                 ;* names and I/O register bit names appearing in the data book can be used.
+                                 ;* In addition, the six registers forming the three data pointers X, Y and 
+                                 ;* Z have been assigned names XL - ZH. Highest RAM address for Internal 
+                                 ;* SRAM is also defined 
+                                 ;* 
+                                 ;* The Register names are represented by their hexadecimal address.
+                                 ;* 
+                                 ;* The Register Bit names are represented by their bit number (0-7).
+                                 ;* 
+                                 ;* Please observe the difference in using the bit names with instructions
+                                 ;* such as "sbr"/"cbr" (set/clear bit in register) and "sbrs"/"sbrc"
+                                 ;* (skip if bit in register set/cleared). The following example illustrates
+                                 ;* this:
+                                 ;* 
+                                 ;* in    r16,PORTB             ;read PORTB latch
+                                 ;* sbr   r16,(1<<PB6)+(1<<PB5) ;set PB6 and PB5 (use masks, not bit#)
+                                 ;* out   PORTB,r16             ;output to PORTB
+                                 ;* 
+                                 ;* in    r16,TIFR              ;read the Timer Interrupt Flag Register
+                                 ;* sbrc  r16,TOV0              ;test the overflow flag (use bit#)
+                                 ;* rjmp  TOV0_is_set           ;jump if set
+                                 ;* ...                         ;otherwise do something else
+                                 ;*************************************************************************
                                  
-                                 soma_dezena:
-000035 2722                      	clr r18		 ; zera LOCAL		
-000036 2733                      	clr r19		 ; zera UNIDADES
-000037 0f4a                      	add r20, r26 ; adiciona DEZENA em 1
-000038 9508                      	ret
+                                 #ifndef _M328PDEF_INC_
+                                 #endif  /* _M328PDEF_INC_ */
                                  
-                                 soma_centena:
-000039 2744                      	clr r20		 ; zera DEZENAS
-00003a 0f5a                      	add r21, r26 ; adiciona CENTENAS em 1
-00003b 9508                      	ret
-                                 soma_low:
-00003c 0f1a                      	add r17, r26 ; adiciona LOW GERAL em 1
-00003d cfe6                      	rjmp soma	 ; volta para a soma
-                                 soma_high:
-00003e e010                      	ldi r17, 0x00 ; zera LOW GERAL
-00003f 0f7a                      	add r23, r26  ; adiciona HIGH GERAL em 1
-000040 cfe3                      	rjmp soma	; volta para a soma
-                                 clear_registradores: 
-000041 2700                      	clr r16		; zera registradores r17 à r23
-000042 2711                      	clr r17
-000043 2722                      	clr r18
-000044 2733                      	clr r19
-000045 2744                      	clr r20
-000046 2755                      	clr r21
-000047 2766                      	clr r22
-000048 2777                      	clr r23
-000049 9508                      	ret
-                                 final:
+                                 ; ***** END OF FILE ******************************************************
+000000 940c 0018                 .org 0x0000 jmp main
+000016 940c 002d                 .org 0x0016 jmp TIMER1_COMPA
+                                 
+                                 main:
+000018 e004                      	ldi r16, 0x04
+000019 e024                      	ldi r18, 0x04
+00001a b90a                      	out DDRD, r16
+00001b e70a                      	ldi r16, 0x7A											;31250 (HIGH)
+00001c e112                      	ldi r17, 0x12											;31250 (LOW)
+00001d 9300 0089                 	sts OCR1AH, r16
+00001f 9310 0088                 	sts OCR1AL, r17
+000021 e002                      	ldi r16, (1 << OCIE1A)
+000022 9300 006f                 	sts TIMSK1, r16
+000024 e008                      	ldi r16, (1 << WGM12)
+000025 9300 0081                 	sts TCCR1B, r16
+000027 9478                          sei
+000028 6003                      	ori r16, (1 << CS10) | (1 << CS11)
+000029 9300 0081                 	sts TCCR1B, r16
+                                 
+                                 wait:
+00002b 7041                      	andi r20, 1
+00002c cffe                      	rjmp wait
+                                 
+                                 TIMER1_COMPA:
+00002d b11b                          in r17, PORTD
+00002e 2712                      	eor r17, r18
+00002f b91b                      	out PORTD, r17
+000030 9518                      	reti
 
 
 RESOURCE USE INFORMATION
@@ -1087,37 +1083,37 @@ counted separately from r26..r31 here.
 "ATmega328P" register use summary:
 x  :   0 y  :   0 z  :   0 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16:   3 r17:  10 r18:   5 r19:   3 r20:   6 
-r21:   2 r22:   1 r23:   4 r24:   8 r25:   3 r26:   6 r27:   2 r28:   2 
-r29:   2 r30:   2 r31:   2 
-Registers used: 16 out of 35 (45.7%)
+r13:   0 r14:   0 r15:   0 r16:  10 r17:   5 r18:   2 r19:   0 r20:   1 
+r21:   0 r22:   0 r23:   0 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 
+r29:   0 r30:   0 r31:   0 
+Registers used: 4 out of 35 (11.4%)
 
 "ATmega328P" instruction use summary:
-.lds  :   0 .sts  :   0 adc   :   0 add   :   5 adiw  :   4 and   :   0 
-andi  :   0 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
-brcc  :   0 brcs  :   0 break :   0 breq  :   2 brge  :   0 brhc  :   0 
+.lds  :   0 .sts  :   0 adc   :   0 add   :   0 adiw  :   0 and   :   0 
+andi  :   1 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
+brcc  :   0 brcs  :   0 break :   0 breq  :   0 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
 brne  :   0 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
 brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   0 cbr   :   0 
-clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :  11 cls   :   0 
+clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   0 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   0 cpc   :   0 
-cpi   :   2 cpse  :   7 dec   :   0 eor   :   0 fmul  :   0 fmuls :   0 
-fmulsu:   0 icall :   0 ijmp  :   0 in    :   0 inc   :   0 jmp   :   0 
-ld    :   0 ldd   :   0 ldi   :  10 lds   :   3 lpm   :   0 lsl   :   0 
-lsr   :   0 mov   :   1 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
-neg   :   0 nop   :   0 or    :   0 ori   :   1 out   :   0 pop   :   0 
-push  :   0 rcall :   5 ret   :   4 reti  :   0 rjmp  :   9 rol   :   0 
+cpi   :   0 cpse  :   0 dec   :   0 eor   :   1 fmul  :   0 fmuls :   0 
+fmulsu:   0 icall :   0 ijmp  :   0 in    :   1 inc   :   0 jmp   :   2 
+ld    :   0 ldd   :   0 ldi   :   6 lds   :   0 lpm   :   0 lsl   :   0 
+lsr   :   0 mov   :   0 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
+neg   :   0 nop   :   0 or    :   0 ori   :   1 out   :   2 pop   :   0 
+push  :   0 rcall :   0 ret   :   0 reti  :   1 rjmp  :   1 rol   :   0 
 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 sbis  :   0 
-sbiw  :   0 sbr   :   0 sbrc  :   1 sbrs  :   0 sec   :   0 seh   :   0 
-sei   :   0 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
-sez   :   0 sleep :   0 spm   :   0 st    :   0 std   :   0 sts   :   3 
+sbiw  :   0 sbr   :   0 sbrc  :   0 sbrs  :   0 sec   :   0 seh   :   0 
+sei   :   1 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
+sez   :   0 sleep :   0 spm   :   0 st    :   0 std   :   0 sts   :   5 
 sub   :   0 subi  :   0 swap  :   0 tst   :   0 wdr   :   0 
-Instructions used: 15 out of 113 (13.3%)
+Instructions used: 11 out of 113 (9.7%)
 
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x000094    148      0    148   32768   0.5%
+[.cseg] 0x000000 0x000062     58      0     58   32768   0.2%
 [.dseg] 0x000100 0x000100      0      0      0    2048   0.0%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 
