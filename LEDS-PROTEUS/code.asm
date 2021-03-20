@@ -1,16 +1,16 @@
 .cseg	
-	.INCLUDE "m328Pdef.inc"
-	.org 0x00 
-		rjmp reset  
-	.org INT0addr
-		rjmp INT0_vect
-	.org 0x34        
-	.org 0x0016 
-		rjmp TIMER1_COMPA
+.INCLUDE "m328Pdef.inc"
+.org 0x00 
+	rjmp reset  
+.org INT0addr
+	rjmp INT0_vect
+.org 0x34        
+.org 0x0016 
+	rjmp TIMER1_COMPA
 
 reset:
 ;***** CONFIG INT. EXTER ********************
-; Set Interrupt to trigger when input is at low level
+
 
 	ldi r16, (1<<ISC01)|(1<<ISC00)	
 	sts EICRA, r16					
@@ -36,8 +36,8 @@ reset:
 ;******* FIM CONFIG INT. EXTER *************		
 main:
 		
-		ldi r26, 0x00
-		ldi r27, 0x01
+		ldi r26, 0x00 ; ZERA O CONTADOR
+		ldi r27, 0x01 ; FATOR DE SOMA DO INCREMETAR A
 
 		
 		ldi r17,0xF0 ; PC0 = 0, PC1 = 0, PC2 = 0, PC3 = 0
@@ -85,16 +85,16 @@ main:
 loop:	
 
 
-	sbic PINC, PC0	
+	sbic PINC, PC1	; VERIFICA SE TEM SINAL HIGH NO BOTÃO, SE NÃO PULA ESSE RJMP, SE SIM EXECUTA ESSE RJMP.
 	rjmp incremeteA
 
+	
 	
 	rjmp loop
 
 incremeteA:
 		
 		add r26, r27
-		;call led_OnM
 		call delay
 		
 rjmp loop
@@ -137,6 +137,7 @@ led_OnH:
 ret
 
 led_OnM:
+		
 		; TOGGLE LED O
 		in r17, PORTD
 		eor r17, r24
@@ -176,7 +177,12 @@ ret
 
 ; ***** TIMER *************
 TIMER1_COMPA:
-		call led_OffM
+		
+		cpi r26,0x01
+		breq led_OnM
+
+		
+
 reti
 ;****** FIM TIMER *********
 
@@ -184,7 +190,10 @@ reti
 INT0_vect:
 	;call led_OnM
 reti
+;******* FIM DE INTERRUPÇÃO EXTERNA NO PIN D2 *************
 
+
+;************* DELAY *****************************
 delay:	
 	ldi  r18, 10
     ldi  r19, 255
@@ -196,7 +205,7 @@ L1: dec  r20
     brne L1
     dec  r18
     brne L1
-/*in r17, PORTD
-eor r17, r21
-out PORTD, r17*/
+
 	ret
+
+; ************ FIM DELAY *********************
