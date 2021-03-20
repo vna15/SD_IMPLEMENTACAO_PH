@@ -1,17 +1,14 @@
+.cseg	
 	.INCLUDE "m328Pdef.inc"
-
 	.org 0x00 
-	rjmp reset  
+		rjmp reset  
 	.org INT0addr
-	rjmp INT0_vect
-	.org 0x34     
-	    
-	.org 0x0016 jmp TIMER1_COMPA
+		rjmp INT0_vect
+	.org 0x34        
+	.org 0x0016 
+		rjmp TIMER1_COMPA
 
-
-
-
-	reset:
+reset:
 ;***** CONFIG INT. EXTER ********************
 ; Set Interrupt to trigger when input is at low level
 
@@ -35,18 +32,16 @@
 	; Resets r18 and PORTB
 	clr r18
 	out PORTB, r18
-	ldi r18, 0x04
 	; Global Enable Interrupt
-	sei								
+	;sei								
 	
 ;******* FIM CONFIG INT. EXTER *************		
-
-	main:
-
+main:
 	
 		ldi r16, 0xFF
-		out DDRD, r16
-		out DDRB, r16 
+		out DDRB, r16
+		ldi r17, 0b11110011
+		out DDRB, r17
 
 		ldi r22, 0b00010000 ; LED T
 		ldi r23, 0b00100000 ; LED W
@@ -84,112 +79,82 @@
 	
 
 loop:	
-	
+	rjmp loop
 
-rjmp loop
-
-	
 led_run:
-
 		out PORTB, r19 ; RECEBE O CONTEÚDO DE r19 
 ret
 
-
 led_timerH:
-
 		sbi PORTD, PD4 ; LIGA O LED T
-
 ret
 
 led_timerM:
-
-		 ; TOGGLE LED T
+		; TOGGLE LED T
 		in r17, PORTD
 		eor r17, r22
-		out PORTD, r17 
-		
+		out PORTD, r17 		
 ret
 
 led_Week:
-
 		sbi PORTD, PD4 ; LIGA O LED T
 		sbi PORTB, PB0 ; LIGA O LED D1
 
-		 ; TOGGLE LED W
-			in r17, PORTD
-			eor r17, r23
-			out PORTD, r17 
-
+		; TOGGLE LED W
+		in r17, PORTD
+		eor r17, r23
+		out PORTD, r17 
 ret
-
 
 led_OnH:
-
 		sbi PORTD, PD6 ; LIGA O LED O
-
 ret
-
 
 led_OnM:
-
-		 ; TOGGLE LED O
-			in r17, PORTD
-			eor r17, r24
-			out PORTD, r17 
+		; TOGGLE LED O
+		in r17, PORTD
+		eor r17, r24
+		out PORTD, r17 
 ret
-		
 
 led_WeekOn:
-
-		
 		sbi PORTD, PD6 ; LIGA O LED O
-
 		sbi PORTB, PB0 ; LIGA O LED D1
 
 		 ; TOGGLE LED W
-			in r17, PORTD
-			eor r17, r23
+		in r17, PORTD
+		eor r17, r23
 		out PORTD, r17 
 ret
 		
-
 led_OffM:
-
-		 ; TOGGLE LED F
-			in r17, PORTD
-			eor r17, r25
-			out PORTD, r17 
-
+		; TOGGLE LED F
+		in r17, PORTD
+		eor r17, r25
+		out PORTD, r17 
 ret
 
 led_OffH:
-
-			sbi PORTD, PD7 ; LIGA O LED F
-
+		sbi PORTD, PD6 ; LIGA O LED F
 ret
 
 led_WeekOff:
+		sbi PORTD, PD7 ; LIGA O LED F
+		sbi PORTB, PB0 ; LIGA O LED D1
 
-			sbi PORTD, PD7 ; LIGA O LED F
-			sbi PORTB, PB0 ; LIGA O LED D1
-
-		  ; TOGGLE LED W
-			in r17, PORTD
-			eor r17, r23
-			out PORTD, r17 
-		
+		; TOGGLE LED W
+		in r17, PORTD
+		eor r17, r23
+		out PORTD, r17 
 ret
-
 
 ; ***** TIMER *************
 TIMER1_COMPA:
-		
 		call led_OffM
 reti
 ;****** FIM TIMER *********
 
 ;****** INT ***************
 INT0_vect:
-	
 	call led_OffH
 reti
