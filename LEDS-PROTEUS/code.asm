@@ -6,14 +6,19 @@
 
 	main:
 
-	//*****INICIO TIMER ************************
+	
 		ldi r16, 0xFF
+		out DDRD, r16
+		out DDRB, r16 
+
 		ldi r22, 0b00010000 ; LED T
 		ldi r23, 0b00100000 ; LED W
 		ldi r24, 0b01000000 ; LED O
 		ldi r25, 0b10000000 ; LED F
 
-		out DDRD, r16
+		
+
+//***** CONFIG. TIMER ************************
 		ldi r16, 0x7A											;31250 (HIGH)
 		ldi r17, 0x12											;31250 (LOW)
 		sts OCR1AH, r16
@@ -25,38 +30,33 @@
 		sei
 		ori r16, (1 << CS10) | (1 << CS11)
 		sts TCCR1B, r16
-	//******** FIM TIMER ***********************
+//******** FIM COFIG TIMER ********************
+	
+		ldi r19, 0x00
+		out PORTB, r19  ; DESLIGA OS 7 LEDS
+		
+		ldi r19, 0b00000001  
+				; 0b00000001 - LIGA D1  
+				; 0b00000011 - LIGA D2       
+				; 0b00000101 - LIGA D3 
+				; 0b00000111 - LIGA D4
+				; 0b00001001 - LIGA D5
+				; 0b00001011 - LIGA D6
+				; 0b00001101 - LIGA D7
 
-		ldi r16, 0xFF             
-		out DDRB, r16 
+	
+		
 	
 
-	
-		ldi r19, 0b00000000
-		ldi r20, 0b00000000
-	
-
-	loop:
-
-	
-	
+	loop:	
 	
 
 	rjmp loop
 
-	delay:
-		dec r18 ; decremente r18
-		brne delay ; salte para delay_loop se r18 n~ao ´e 0
-		dec r17 ; decremente r17
-		brne delay ; salte para delay_loop se r17 n~ao ´e 0
-		dec r19 ; decrament r19
-		brne delay ; salte para delay_loop se r19 n~ao ´e 0
-		ret ; retorne
-
-
+	
 	led_run:
 
-		out PORTB, r19
+		out PORTB, r19 ; RECEBE O CONTEÚDO DE r19 
 		ret
 
 
@@ -64,13 +64,14 @@
 
 		sbi PORTD, PD4 ; LIGA O LED T
 
+		ret
+
 		led_timerM:
 
 		 ; TOGGLE LED T
 		in r17, PORTD
 		eor r17, r22
 		out PORTD, r17 
-		
 		
 		ret
 
@@ -148,5 +149,5 @@
 	// ***** TIMER *************
 	TIMER1_COMPA:
 		
-		call led_WeekOff
+		call led_timerH
 		reti
