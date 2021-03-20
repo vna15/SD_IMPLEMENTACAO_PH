@@ -8,9 +8,8 @@
 .org 0x0016 
 	rjmp TIMER1_COMPA
 
-reset:
 ;***** CONFIG INT. EXTER ********************
-
+reset:
 
 	ldi r16, (1<<ISC01)|(1<<ISC00)	
 	sts EICRA, r16					
@@ -37,7 +36,7 @@ reset:
 main:
 		
 		ldi r26, 0x00 ; ZERA O CONTADOR
-		ldi r27, 0x01 ; FATOR DE SOMA DO INCREMETAR A
+		ldi r27, 0x00 ; FATOR DE SOMA DO INCREMETAR A
 
 		
 		ldi r17,0xF0 ; PC0 = 0, PC1 = 0, PC2 = 0, PC3 = 0
@@ -84,7 +83,7 @@ main:
 
 loop:	
 
-
+	call led_run
 	sbic PINC, PC1	; VERIFICA SE TEM SINAL HIGH NO BOTÃO, SE NÃO PULA ESSE RJMP, SE SIM EXECUTA ESSE RJMP.
 	rjmp incremeteA
 
@@ -94,16 +93,11 @@ loop:
 
 incremeteA:
 		
-		add r26, r27
+		inc r26
 		call delay
 		
 rjmp loop
 
-incremeteR:
-
-up:
-
-down:
 
 
 
@@ -112,10 +106,14 @@ led_run:
 ret
 
 led_timerH:
+		sbic PINC, PC1
+		rjmp led_timerH
 		sbi PORTD, PD4 ; LIGA O LED T
 ret
 
 led_timerM:
+		sbic PINC, PC1
+		rjmp led_timerM
 		; TOGGLE LED T
 		in r17, PORTD
 		eor r17, r22
@@ -123,6 +121,8 @@ led_timerM:
 ret
 
 led_Week:
+		sbic PINC, PC1
+		rjmp led_Week
 		sbi PORTD, PD4 ; LIGA O LED T
 		sbi PORTB, PB0 ; LIGA O LED D1
 
@@ -133,18 +133,25 @@ led_Week:
 ret
 
 led_OnH:
+		
+		sbic PINC, PC1
+		rjmp led_OnH
 		sbi PORTD, PD6 ; LIGA O LED O
-ret
+		rjmp OnM
+
 
 led_OnM:
-		
+		sbic PINC, PC1
+		rjmp led_OnM		
 		; TOGGLE LED O
 		in r17, PORTD
 		eor r17, r24
 		out PORTD, r17 
-ret
+		rjmp WeekOn
 
 led_WeekOn:
+		sbic PINC, PC1
+		rjmp led_WeekOn
 		sbi PORTD, PD6 ; LIGA O LED O
 		sbi PORTB, PB0 ; LIGA O LED D1
 
@@ -152,20 +159,33 @@ led_WeekOn:
 		in r17, PORTD
 		eor r17, r23
 		out PORTD, r17 
-ret
+
+		rjmp OffH
+
 		
 led_OffM:
+		sbic PINC, PC1
+		rjmp led_OffM
 		; TOGGLE LED F
 		in r17, PORTD
 		eor r17, r25
 		out PORTD, r17 
-ret
+
+		rjmp WeekOff
+
 
 led_OffH:
-		sbi PORTD, PD6 ; LIGA O LED F
-ret
+		
+		sbic PINC, PC1
+		rjmp led_OffH
+		cbi PORTD, PD5
+		cbi PORTD, PD6
+		sbi PORTD, PD7 ; LIGA O LED F
+		rjmp OffM
 
 led_WeekOff:
+		sbic PINC, PC1
+		rjmp led_WeekOff
 		sbi PORTD, PD7 ; LIGA O LED F
 		sbi PORTB, PB0 ; LIGA O LED D1
 
@@ -173,14 +193,56 @@ led_WeekOff:
 		in r17, PORTD
 		eor r17, r23
 		out PORTD, r17 
-ret
+
+		rjmp testaInterval
+
+testaIntervalo:
+		sbic PINC, PC1
+		rjmp testaIntervalo
+		cbi PORTD, PD5
+		clr r26
+		out PORTD, r27
+		rjmp fim
+		
 
 ; ***** TIMER *************
 TIMER1_COMPA:
-		
-		cpi r26,0x01
-		breq led_OnM
+	
+	cpi r26, 1
+	breq led_OnH
 
+	OnM:
+
+	cpi r26, 2
+	breq led_OnM
+
+	WeekOn:
+
+	cpi r26, 3
+	breq led_WeekOn
+
+	OffH:
+
+	cpi r26, 4
+	breq led_OffH
+
+	OffM:
+
+	cpi r26, 5
+	breq led_OffM
+
+		
+
+	WeekOff:
+	cpi r26, 6
+	breq led_WeekOff	
+	
+	testaInterval:
+
+	cpi r26, 7
+	breq testaIntervalo
+
+	fim:
 		
 
 reti
