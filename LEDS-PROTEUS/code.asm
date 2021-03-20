@@ -35,8 +35,17 @@ reset:
 	
 ;******* FIM CONFIG INT. EXTER *************		
 main:
-	
+		
+		ldi r26, 0x00
+		ldi r27, 0x01
 
+		
+		ldi r17,0xF0 ; PC0 = 0, PC1 = 0, PC2 = 0, PC3 = 0
+		out DDRC, r17 ; PCO = R, PC1 = A, PC2 = UP, PC3 = DOWN
+
+		sbi PORTC, PC0
+		ldi r16, 0x0F
+		out PORTC, r16 ; DEFINE OS BOTOES COMO ENTRADA
 
 		ldi r22, 0b00010000 ; LED T
 		ldi r23, 0b00100000 ; LED W
@@ -74,7 +83,29 @@ main:
 	
 
 loop:	
+
+
+	sbic PINC, PC0	
+	rjmp incremeteA
+
+	
 	rjmp loop
+
+incremeteA:
+		
+		add r26, r27
+		;call led_OnM
+		call delay
+		
+rjmp loop
+
+incremeteR:
+
+up:
+
+down:
+
+
 
 led_run:
 		out PORTB, r19 ; RECEBE O CONTEÚDO DE r19 
@@ -149,7 +180,23 @@ TIMER1_COMPA:
 reti
 ;****** FIM TIMER *********
 
-;****** INT ***************
+;****** INTERRUPÇÃO EXTERNA NO PIN D2 ***************
 INT0_vect:
-	call led_OnM
+	;call led_OnM
 reti
+
+delay:	
+	ldi  r18, 10
+    ldi  r19, 255
+	ldi  r20, 255
+
+L1: dec  r20
+    brne L1
+	dec  r19
+    brne L1
+    dec  r18
+    brne L1
+/*in r17, PORTD
+eor r17, r21
+out PORTD, r17*/
+	ret
