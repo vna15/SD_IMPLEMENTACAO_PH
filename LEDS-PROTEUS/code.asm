@@ -21,13 +21,11 @@ reset:
 	ldi r16, (1<<INTF0)
 	out EIFR, r16
 
-	; Sets PORTB as output
-	ldi r16, 0x04						
-	out DDRB, r16					
+		ldi r16, 0xFF
+		out DDRB, r16
 
-	; Sets PORTD as input						
- 	ldi r17, 0x04						
-	out DDRD, r17
+		ldi r17, 0b11110111
+		out DDRD, r17
 
 	; Resets r18 and PORTB
 	clr r18
@@ -38,10 +36,7 @@ reset:
 ;******* FIM CONFIG INT. EXTER *************		
 main:
 	
-		ldi r16, 0xFF
-		out DDRB, r16
-		ldi r17, 0b11110011
-		out DDRB, r17
+
 
 		ldi r22, 0b00010000 ; LED T
 		ldi r23, 0b00100000 ; LED W
@@ -156,5 +151,5 @@ reti
 
 ;****** INT ***************
 INT0_vect:
-	call led_OffH
+	call led_OnM
 reti
