@@ -12,7 +12,46 @@
 ;r26 - GET/SET DAY.		(RTC_GET_D: r26 <= SPDR) | (RTC_SET_D: SPIDR <= r26)
 
 ;R23 - NUMBER DISPLAYS
-.ORG 0x00
+.cseg
+	.org 0x00						
+	rjmp reset
+	.org INT0addr
+	rjmp INT0_vect
+	.org 0x34						 
+
+reset:
+	
+	; Set Interrupt to trigger when input is at low level
+	ldi r16, (1<<ISC01)|(0<<ISC00)	
+	sts EICRA, r16					
+	
+	ldi r16, (1<<INT0)				
+	out EIMSK, r16					
+
+	ldi r16, (1<<INTF0)
+	out EIFR, r16
+
+	; Sets PORTB as output
+	ldi r16, 0x04						
+	out DDRB, r16					
+
+	; Resets r18 and PORTB
+	clr r18
+	out PORTB, r18
+	
+	; Global Enable Interrupt
+	sei								
+
+	RJMP	SETUP_LOOP
+
+	; Interrupt Vector
+INT0_vect:
+	RCALL	RTC_RESET_ALARMS
+	ldi r30, 0x04
+	in r17, PORTB
+	eor r17, r30
+	out PORTB, r17
+	reti
 
 SETUP_LOOP:
 LDI		r17, (1<<DDB3) | (1<<DDB5) | (1<<DDB2) | (1<<DDB1)
@@ -20,8 +59,18 @@ OUT		DDRB, r17
 
 LDI		r24, 0x59 ; 59min.
 LDI		r25, 0x12 ; 12horas
-LDI		r26, 0x03 ; Ter�a-Feira
-RCALL RTC_SETUP	;
+LDI		r26, 0x03 ; Terça-Feira
+RCALL RTC_SETUP	; Setup Hora, alarmes e interrupção
+
+LDI		r24, 0x00 ; 59min.
+LDI		r25, 0x13 ; 12horas
+LDI		r26, 0x03 ; Terça-Feira
+RCALL	RTC_SETUP_ALARM1
+
+LDI		r24, 0x02 ; 59min.
+LDI		r25, 0x13 ; 12horas
+LDI		r26, 0x03 ; Terça-Feira
+RCALL	RTC_SETUP_ALARM2
 
 RCALL DISPLAY_SETUP
 
@@ -45,7 +94,6 @@ DISPLAY_OFF:
 
 ;************************************
 RTC_ON:
-
 	LDI		r17, (1<<PB2) | (0<<PB1)
 	OUT		PORTB, r17
 	RET
@@ -53,7 +101,6 @@ RTC_ON:
 
 ;************************************
 RTC_OFF:
-
 	LDI		r17, (1<<PB2) | (1<<PB1)
 	OUT		PORTB, r17
 	RET
@@ -61,7 +108,6 @@ RTC_OFF:
 
 ;************************************
 SPI_MODE_0:
-	LDI		r17, 0x00
 	LDI		r17, (1<<SPE) | (1<<MSTR)
 	OUT		SPCR, r17
 	RET
@@ -69,7 +115,6 @@ SPI_MODE_0:
 
 ;************************************
 SPI_MODE_1:
-	LDI		r17, 0x00
 	LDI		r17, (1<<SPE) | (1<<MSTR) | (1<<CPHA)
 	OUT		SPCR, r17
 	RET
@@ -125,6 +170,51 @@ RTC_SETUP:
 	RCALL	RTC_SET_M
 	RCALL	RTC_SET_H
 	RCALL	RTC_SET_D
+	RCALL	RTC_SET_CONTROL_REGISTER
+	RET
+;------------------------------------
+
+;************************************
+RTC_SETUP_ALARM1:
+	RCALL	RTC_SET_M_A1
+	RCALL	RTC_SET_H_A1
+	RCALL	RTC_SET_D_A1
+	RET
+;------------------------------------
+
+;************************************
+RTC_SETUP_ALARM2:
+	RCALL	RTC_SET_M_A2
+	RCALL	RTC_SET_H_A2
+	RCALL	RTC_SET_D_A2
+	RET
+;------------------------------------
+
+;************************************
+RTC_SET_CONTROL_REGISTER:
+	RCALL	SPI_MODE_1
+	RCALL	RTC_OFF
+	NOP
+	RCALL	RTC_ON
+	LDI		r18, 0x8E ;CMD Set minutes
+	RCALL	SPI_TRANSFER
+	LDI		r18, 0x07 ;Set Flag alarm 1 e 2 e habilita interrupção.
+	RCALL	SPI_TRANSFER
+	RCALL	RTC_OFF
+	RET
+;------------------------------------
+
+;************************************
+RTC_RESET_ALARMS:
+	RCALL	SPI_MODE_1
+	RCALL	RTC_OFF
+	NOP
+	RCALL	RTC_ON
+	LDI		r18, 0x8F ;CMD Set minutes
+	RCALL	SPI_TRANSFER
+	LDI		r18, 0xC8 ;Set Flag alarm 1 e 2 e habilita interrupção.
+	RCALL	SPI_TRANSFER
+	RCALL	RTC_OFF
 	RET
 ;------------------------------------
 
@@ -135,6 +225,34 @@ RTC_SET_M:
 	NOP
 	RCALL	RTC_ON
 	LDI		r18, 0x81 ;CMD Set minutes
+	RCALL	SPI_TRANSFER
+	MOV		r18, r24 ;Set MINUTO.
+	RCALL	SPI_TRANSFER
+	RCALL	RTC_OFF
+	RET
+;------------------------------------
+
+;************************************
+RTC_SET_M_A1: ;Set Minutos do alarme 1
+	RCALL	SPI_MODE_1
+	RCALL	RTC_OFF
+	NOP
+	RCALL	RTC_ON
+	LDI		r18, 0x88 ;CMD Set minutes alarme 1
+	RCALL	SPI_TRANSFER
+	MOV		r18, r24 ;Set MINUTO.
+	RCALL	SPI_TRANSFER
+	RCALL	RTC_OFF
+	RET
+;------------------------------------
+
+;************************************
+RTC_SET_M_A2: ;Set Minutos do alarme 2
+	RCALL	SPI_MODE_1
+	RCALL	RTC_OFF
+	NOP
+	RCALL	RTC_ON
+	LDI		r18, 0x8B ;CMD Set minutes alarme 2
 	RCALL	SPI_TRANSFER
 	MOV		r18, r24 ;Set MINUTO.
 	RCALL	SPI_TRANSFER
@@ -157,6 +275,34 @@ RTC_SET_H:
 ;------------------------------------
 
 ;************************************
+RTC_SET_H_A1: ;Set Horas do alarme 1
+	RCALL	SPI_MODE_1
+	RCALL	RTC_OFF
+	NOP
+	RCALL	RTC_ON
+	LDI		r18, 0x89 ;CMD Set hour alarme 1
+	RCALL	SPI_TRANSFER
+	MOV		r18, r25 ;Set HORA.
+	RCALL	SPI_TRANSFER
+	RCALL	RTC_OFF
+	RET
+;------------------------------------
+
+;************************************
+RTC_SET_H_A2: ;Set Horas do alarme 2
+	RCALL	SPI_MODE_1
+	RCALL	RTC_OFF
+	NOP
+	RCALL	RTC_ON
+	LDI		r18, 0x8C ;CMD Set hour alarme 2
+	RCALL	SPI_TRANSFER
+	MOV		r18, r25 ;Set HORA.
+	RCALL	SPI_TRANSFER
+	RCALL	RTC_OFF
+	RET
+;------------------------------------
+
+;************************************
 RTC_SET_D:
 	RCALL	SPI_MODE_1
 	RCALL	RTC_OFF
@@ -165,6 +311,36 @@ RTC_SET_D:
 	LDI		r18, 0x83 ;CMD Set Day week (1:Dom. | 2:Seg. | ... |7:Sab.)
 	RCALL	SPI_TRANSFER
 	MOV		r18, r26 ;Set DIA.
+	RCALL	SPI_TRANSFER
+	RCALL	RTC_OFF
+	RET
+;------------------------------------
+
+;************************************
+RTC_SET_D_A1: ;Set Dia da semana do alarme 1
+	RCALL	SPI_MODE_1
+	RCALL	RTC_OFF
+	NOP
+	RCALL	RTC_ON
+	LDI		r18, 0x8A ;CMD Set Day week (1:Dom. | 2:Seg. | ... |7:Sab.)
+	RCALL	SPI_TRANSFER
+	MOV		r18, r26 ;Set DIA. alarme 1
+	ORI		r18, 0x40 ;Set DY/DT~ para Dia da semana
+	RCALL	SPI_TRANSFER
+	RCALL	RTC_OFF
+	RET
+;------------------------------------
+
+;************************************
+RTC_SET_D_A2: ;Set Dia da semana do alarme 2
+	RCALL	SPI_MODE_1
+	RCALL	RTC_OFF
+	NOP
+	RCALL	RTC_ON
+	LDI		r18, 0x8D ;CMD Set Day week (1:Dom. | 2:Seg. | ... |7:Sab.)
+	RCALL	SPI_TRANSFER
+	MOV		r18, r26 ;Set DIA. alarme 2
+	ORI		r18, 0x40 ;Set DY/DT~ para Dia da semana
 	RCALL	SPI_TRANSFER
 	RCALL	RTC_OFF
 	RET
@@ -254,7 +430,6 @@ PRINT_DISPLAY:
 	ADD		R18, R16	; para exibir os dois pontos
 	RCALL	SPI_TRANSFER
 	RCALL	DISPLAY_OFF
-	
 	
 	LSR		r25
 	LSR		r25
