@@ -67,10 +67,10 @@ main:
 		sts TCCR1B, r16
 ;******** FIM COFIG TIMER ********************
 	
-		ldi r19, 0x00
-		out PORTB, r19  ; DESLIGA OS 7 LEDS
+		ldi r21, 0x00
+		out PORTB, r21  ; DESLIGA OS 7 LEDS
 		
-		ldi r19, 0b00000001  
+		ldi r21, 0b00000001  
 				; 0b00000001 - LIGA D1  
 				; 0b00000011 - LIGA D2       
 				; 0b00000101 - LIGA D3 
@@ -87,7 +87,7 @@ loop:
 	rjmp incremeteA
 
 	sbic PINC, PC0 ; R
-	rjmp incremeteB
+	rjmp incremeteR
 	
 	
 	rjmp loop
@@ -99,7 +99,7 @@ incremeteA:
 		
 rjmp loop
 
-incremeteB:
+incremeteR:
 
 		inc r28
 		call delay
@@ -108,7 +108,9 @@ incremeteB:
 rjmp loop
 
 led_run:
-		out PORTB, r19 ; RECEBE O CONTEÚDO DE r19 
+		out PORTB, r21 ; RECEBE O CONTEÚDO DE r19 
+		;cbi PORTD, PD5 ; DESLIGA O LED W
+		;cbi PORTD, PD4 ; DESLIGA O LED T
 ret
 
 
