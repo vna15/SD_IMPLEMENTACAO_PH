@@ -1,19 +1,15 @@
-	.INCLUDE "m328Pdef.inc"
-
-	.org 0x00 
+.cseg	
+.INCLUDE "m328Pdef.inc"
+.org 0x00 
 	rjmp reset  
-	.org INT0addr
+.org INT0addr
 	rjmp INT0_vect
-	.org 0x34     
-	    
-	.org 0x0016 jmp TIMER1_COMPA
+.org 0x34        
+.org 0x0016 
+	rjmp TIMER1_COMPA
 
-
-
-
-	reset:
 ;***** CONFIG INT. EXTER ********************
-; Set Interrupt to trigger when input is at low level
+reset:
 
 	ldi r16, (1<<ISC01)|(1<<ISC00)	
 	sts EICRA, r16					
@@ -24,29 +20,33 @@
 	ldi r16, (1<<INTF0)
 	out EIFR, r16
 
-	; Sets PORTB as output
-	ldi r16, 0x04						
-	out DDRB, r16					
+		ldi r16, 0xFF
+		out DDRB, r16
 
-	; Sets PORTD as input						
- 	ldi r17, 0x04						
-	out DDRD, r17
+		ldi r17, 0b11110111
+		out DDRD, r17
 
 	; Resets r18 and PORTB
 	clr r18
 	out PORTB, r18
-	ldi r18, 0x04
 	; Global Enable Interrupt
-	sei								
+	;sei								
 	
 ;******* FIM CONFIG INT. EXTER *************		
+main:
+		
+		ldi r26, 0x00
+		ldi r27, 0x00
+		ldi r28, 0x00
+		
 
-	main:
+		
+		ldi r17,0xF0 ; PC0 = 0, PC1 = 0, PC2 = 0, PC3 = 0
+		out DDRC, r17 ; PCO = R, PC1 = A, PC2 = UP, PC3 = DOWN
 
-	
-		ldi r16, 0xFF
-		out DDRD, r16
-		out DDRB, r16 
+		sbi PORTC, PC0
+		ldi r16, 0x0F
+		out PORTC, r16 ; DEFINE OS BOTOES COMO ENTRADA
 
 		ldi r22, 0b00010000 ; LED T
 		ldi r23, 0b00100000 ; LED W
@@ -78,118 +78,221 @@
 				; 0b00001001 - LIGA D5
 				; 0b00001011 - LIGA D6
 				; 0b00001101 - LIGA D7
-
-	
 		
-	
 
 loop:	
+
+	call led_run
+	sbic PINC, PC1	; A - VERIFICA SE TEM SINAL HIGH NO BOTÃO, SE NÃO PULA ESSE RJMP, SE SIM EXECUTA ESSE RJMP.
+	rjmp incremeteA
+
+	sbic PINC, PC0 ; R
+	rjmp incremeteB
 	
+	
+	rjmp loop
+
+incremeteA:
+		
+		inc r26
+		call delay
+		
+rjmp loop
+
+incremeteB:
+
+		inc r28
+		call delay
+
 
 rjmp loop
 
-	
 led_run:
-
 		out PORTB, r19 ; RECEBE O CONTEÚDO DE r19 
 ret
 
 
-led_timerH:
-
-		sbi PORTD, PD4 ; LIGA O LED T
-
-ret
-
-led_timerM:
-
-		 ; TOGGLE LED T
-		in r17, PORTD
-		eor r17, r22
-		out PORTD, r17 
-		
-ret
-
-led_Week:
-
-		sbi PORTD, PD4 ; LIGA O LED T
-		sbi PORTB, PB0 ; LIGA O LED D1
-
-		 ; TOGGLE LED W
-			in r17, PORTD
-			eor r17, r23
-			out PORTD, r17 
-
-ret
-
-
 led_OnH:
-
+		
+		sbic PINC, PC1
+		rjmp led_OnH
 		sbi PORTD, PD6 ; LIGA O LED O
-
-ret
+		rjmp OnM
 
 
 led_OnM:
-
-		 ; TOGGLE LED O
-			in r17, PORTD
-			eor r17, r24
-			out PORTD, r17 
-ret
-		
+		sbic PINC, PC1
+		rjmp led_OnM		
+		; TOGGLE LED O
+		in r17, PORTD
+		eor r17, r24
+		out PORTD, r17 
+		rjmp WeekOn
 
 led_WeekOn:
-
-		
+		sbic PINC, PC1
+		rjmp led_WeekOn
 		sbi PORTD, PD6 ; LIGA O LED O
-
 		sbi PORTB, PB0 ; LIGA O LED D1
 
 		 ; TOGGLE LED W
-			in r17, PORTD
-			eor r17, r23
+		in r17, PORTD
+		eor r17, r23
 		out PORTD, r17 
-ret
-		
 
-led_OffM:
-
-		 ; TOGGLE LED F
-			in r17, PORTD
-			eor r17, r25
-			out PORTD, r17 
-
-ret
+		rjmp OffH
 
 led_OffH:
+		
+		sbic PINC, PC1
+		rjmp led_OffH
+		cbi PORTD, PD5
+		cbi PORTD, PD6
+		sbi PORTD, PD7 ; LIGA O LED F
+		rjmp OffM
+				
+led_OffM:
+		sbic PINC, PC1
+		rjmp led_OffM
+		; TOGGLE LED F
+		in r17, PORTD
+		eor r17, r25
+		out PORTD, r17 
 
-			sbi PORTD, PD7 ; LIGA O LED F
-
-ret
+		rjmp WeekOff
 
 led_WeekOff:
+		sbic PINC, PC1
+		rjmp led_WeekOff
+		sbi PORTD, PD7 ; LIGA O LED F
+		sbi PORTB, PB0 ; LIGA O LED D1
 
-			sbi PORTD, PD7 ; LIGA O LED F
-			sbi PORTB, PB0 ; LIGA O LED D1
+		; TOGGLE LED W
+		in r17, PORTD
+		eor r17, r23
+		out PORTD, r17 
 
-		  ; TOGGLE LED W
-			in r17, PORTD
-			eor r17, r23
-			out PORTD, r17 
+		rjmp testaInterval
+
+testaIntervalo:
+		sbic PINC, PC1
+		rjmp testaIntervalo
+		cbi PORTD, PD5
+		clr r26
+		out PORTD, r27
+		rjmp fim1
 		
-ret
+
+led_timerH:
+		sbic PINC, PC0
+		rjmp led_timerH
+
+		sbi PORTD, PD4 ; LIGA O LED T
+		
+rjmp timerM
+
+led_timerM:
+		sbic PINC, PC0
+		rjmp led_timerM
+
+		; TOGGLE LED T
+		in r17, PORTD
+		eor r17, r22
+		out PORTD, r17 		
+		rjmp Week
+
+led_Week:
+		sbic PINC, PC0
+		rjmp led_Week
+
+		sbi PORTD, PD4 ; LIGA O LED T
+		sbi PORTB, PB0 ; LIGA O LED D1
+
+		; TOGGLE LED W
+		in r17, PORTD
+		eor r17, r23
+		out PORTD, r17 
+		rjmp fim2
 
 
 ; ***** TIMER *************
 TIMER1_COMPA:
+	
+	cpi r26, 1
+	breq led_OnH
+
+	OnM:
+
+	cpi r26, 2
+	breq led_OnM
+
+	WeekOn:
+
+	cpi r26, 3
+	breq led_WeekOn
+
+	OffH:
+
+	cpi r26, 4
+	breq led_OffH
+
+	OffM:
+
+	cpi r26, 5
+	breq led_OffM
+
 		
-		call led_OffM
+
+	WeekOff:
+	cpi r26, 6
+	breq led_WeekOff	
+	
+	testaInterval:
+
+	cpi r26, 7
+	breq testaIntervalo
+
+	fim1:
+
+	cpi r28,1
+	breq led_timerH
+
+	timerM:
+
+	cpi r28, 2
+	breq led_timerM
+
+	Week:
+
+	cpi r28, 3
+	breq led_Week
+
+	fim2:
+		
+
 reti
 ;****** FIM TIMER *********
 
-;****** INT ***************
+;****** INTERRUPÇÃO EXTERNA NO PIN D2 ***************
 INT0_vect:
-	
-	call led_OffH
+	;call led_OnM
 reti
+;******* FIM DE INTERRUPÇÃO EXTERNA NO PIN D2 *************
+
+
+;************* DELAY *****************************
+delay:	
+	ldi  r18, 10
+    ldi  r19, 255
+	ldi  r20, 255
+
+L1: dec  r20
+    brne L1
+	dec  r19
+    brne L1
+    dec  r18
+    brne L1
+
+	ret
+
+; ************ FIM DELAY *********************
