@@ -76,11 +76,13 @@ RCALL DISPLAY_SETUP
 
 MAIN_LOOP:
 
-;RCALL	RTC_GET_M ; r25 <= SPDR (Resposta do SPI)
+;RCALL	RTC_GET_M ; r24 <= SPDR (Resposta do SPI)
 ;RCALL	PRINT_MINUTO
 
 RCALL	RTC_GET_H ; r25 <= SPDR (Resposta do SPI)
 RCALL	PRINT_HORA
+
+;RCALL	PRINT_DISPLAY
 JMP	MAIN_LOOP
 
 ;************************************
