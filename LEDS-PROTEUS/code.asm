@@ -23,7 +23,7 @@ reset:
 		ldi r16, 0xFF
 		out DDRB, r16
 
-		ldi r17, 0b11110111
+		ldi r17, 0b11111011
 		out DDRD, r17
 
 	; Resets r18 and PORTB
@@ -38,7 +38,6 @@ main:
 		ldi r26, 0x00
 		ldi r27, 0x00
 		ldi r28, 0x00
-		
 
 		
 		ldi r17,0xF0 ; PC0 = 0, PC1 = 0, PC2 = 0, PC3 = 0
@@ -66,18 +65,17 @@ main:
 		ori r16, (1 << CS10) | (1 << CS11)
 		sts TCCR1B, r16
 ;******** FIM COFIG TIMER ********************
-	
-		ldi r21, 0x00
-		out PORTB, r21  ; DESLIGA OS 7 LEDS
+				
+		ldi r21, 0b00000001
+				;0b00000001 - D1
+				;0b00000010 - D2
+				;0b00000011 - D3
+				;0b00000100 - D4
+				;0b00000101 - D5
+				;0b00000110 - D6
+				;0b00000111 - D7
+				
 		
-		ldi r21, 0b00000001  
-				; 0b00000001 - LIGA D1  
-				; 0b00000011 - LIGA D2       
-				; 0b00000101 - LIGA D3 
-				; 0b00000111 - LIGA D4
-				; 0b00001001 - LIGA D5
-				; 0b00001011 - LIGA D6
-				; 0b00001101 - LIGA D7
 		
 
 loop:	
@@ -108,7 +106,7 @@ incremeteR:
 rjmp loop
 
 led_run:
-		out PORTB, r21 ; RECEBE O CONTEÚDO DE r19 
+		;sbi PORTD, PD0 ;  
 		;cbi PORTD, PD5 ; DESLIGA O LED W
 		;cbi PORTD, PD4 ; DESLIGA O LED T
 ret
@@ -135,7 +133,7 @@ led_WeekOn:
 		sbic PINC, PC1
 		rjmp led_WeekOn
 		sbi PORTD, PD6 ; LIGA O LED O
-		sbi PORTB, PB0 ; LIGA O LED D1
+		sbi PORTD, PD0 ; LIGA O LED D1
 
 		 ; TOGGLE LED W
 		in r17, PORTD
@@ -144,36 +142,24 @@ led_WeekOn:
 
 		rjmp OffH
 
-led_OffH:
-		
+led_OffH:		
 		sbic PINC, PC1
 		rjmp led_OffH
+		cbi PORTD, PD0
 		cbi PORTD, PD5
 		cbi PORTD, PD6
 		sbi PORTD, PD7 ; LIGA O LED F
-		rjmp OffM
-				
-led_OffM:
-		sbic PINC, PC1
-		rjmp led_OffM
-		; TOGGLE LED F
-		in r17, PORTD
-		eor r17, r25
-		out PORTD, r17 
-
-		rjmp WeekOff
+		rjmp OffM				
 
 led_WeekOff:
 		sbic PINC, PC1
 		rjmp led_WeekOff
 		sbi PORTD, PD7 ; LIGA O LED F
-		sbi PORTB, PB0 ; LIGA O LED D1
-
+		sbi PORTD, PD0 ; LIGA O LED D1
 		; TOGGLE LED W
 		in r17, PORTD
 		eor r17, r23
 		out PORTD, r17 
-
 		rjmp testaInterval
 
 testaIntervalo:
@@ -208,13 +194,15 @@ led_Week:
 		rjmp led_Week
 
 		sbi PORTD, PD4 ; LIGA O LED T
-		sbi PORTB, PB0 ; LIGA O LED D1
+		sbi PORTD, PD0 ; LIGA O LED D1
 
 		; TOGGLE LED W
 		in r17, PORTD
 		eor r17, r23
 		out PORTD, r17 
 		rjmp fim2
+
+
 
 
 ; ***** TIMER *************
@@ -270,9 +258,24 @@ TIMER1_COMPA:
 	breq led_Week
 
 	fim2:
+
+	cpi r28, 4
+	breq resetR
+
+	fim3:
 		
 
 reti
+
+resetR:
+		clr r28
+		cbi PORTD, PD4
+		cbi PORTD, PD5
+		cbi PORTD, PD6
+		cbi PORTD, PD7
+		cbi PORTD, PD0
+
+		rjmp fim3
 ;****** FIM TIMER *********
 
 ;****** INTERRUPÇÃO EXTERNA NO PIN D2 ***************
@@ -298,3 +301,11 @@ L1: dec  r20
 	ret
 
 ; ************ FIM DELAY *********************
+led_OffM:
+		sbic PINC, PC1
+		rjmp led_OffM
+		; TOGGLE LED F
+		in r17, PORTD
+		eor r17, r25
+		out PORTD, r17 
+		rjmp WeekOff
