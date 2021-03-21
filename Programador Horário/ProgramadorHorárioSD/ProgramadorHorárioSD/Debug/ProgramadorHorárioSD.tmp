@@ -1,0 +1,51 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.2.8</VERSION>
+ <DEVICE>"ATmega328P"</DEVICE>
+ <WORKING_DIR>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\Debug</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc</DIR>
+  <DIR>C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avrassembler\Include</DIR>
+  <DIR></DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc\m328Pdef.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\Debug\ProgramadorHorárioSD.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>ProgramadorHorárioSD.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>ProgramadorHorárioSD.map</FILE>
+  <FILE>ProgramadorHorárioSD.lss</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <SPI_CONFIG><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>11</LINE></SPI_CONFIG>
+  <DISPLAY_SETUP><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>38</LINE></DISPLAY_SETUP>
+  <RTC_SETUP><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>82</LINE></RTC_SETUP>
+  <READ_TIME><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>114</LINE></READ_TIME>
+  <JUMP><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>178</LINE></JUMP>
+  <DISPLAY_ON><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>26</LINE></DISPLAY_ON>
+  <DISPLAY_OFF><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>32</LINE></DISPLAY_OFF>
+  <SPI_TRANSFER><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>138</LINE></SPI_TRANSFER>
+  <RTC_ON><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>70</LINE></RTC_ON>
+  <RTC_OFF><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>76</LINE></RTC_OFF>
+  <SPI_RECEIVE><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>131</LINE></SPI_RECEIVE>
+  <SPI_WAIT_TRANSFER><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>143</LINE></SPI_WAIT_TRANSFER>
+  <LOOP_NUMBERS_1><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>150</LINE></LOOP_NUMBERS_1>
+  <LOOP_NUMBERS><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>167</LINE></LOOP_NUMBERS>
+  <LOOP_NUMBERS_2><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>155</LINE></LOOP_NUMBERS_2>
+  <LOOP_NUMBERS_INC><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>172</LINE></LOOP_NUMBERS_INC>
+  <delay><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>274</LINE></delay>
+  <SET_NUMBERS_DIF><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>181</LINE></SET_NUMBERS_DIF>
+  <init_timer><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>213</LINE></init_timer>
+  <wait_timer><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>243</LINE></wait_timer>
+  <end_timer><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>251</LINE></end_timer>
+  <timer><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>267</LINE></timer>
+  <L3><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>276</LINE></L3>
+  <L2><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>277</LINE></L2>
+  <L1><FILE>C:\Users\vnaze\Desktop\Programador Horário\ProgramadorHorárioSD\ProgramadorHorárioSD\main.asm</FILE><LINE>278</LINE></L1>
+ </LABELS>
+</ASSEMBLER_INFO>
