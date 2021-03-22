@@ -50,27 +50,31 @@ setup_botoes_led:
 	out DDRC,r17; PCO = R, PC1 = A, PC2 = UP, PC3 = DOWN
 
 	ldi r22, 0b00010000 ; LED T
-	ldi r23, 0b00100000 ; LED W
+	ldi r19, 0b00100000 ; LED W
 	ldi r30, 0b01000000 ; LED O
 	ldi r31, 0b10000000 ; LED F
 ;----------------------------------------------
 ;*********** SETUP INÍCIO DO RTC **************
-		LDI		r24, 0x30 ; 0min.
-		LDI		r25, 0x12 ; 0horas
-		LDI		r26, 0x01 ; DOMINGO
-		RCALL RTC_SETUP	 
+SETUP_LOOP:
+	LDI		r17, (1<<DDB3) | (1<<DDB5) | (1<<DDB2) | (1<<DDB1)
+	OUT		DDRB, r17
 
-		LDI		r24, 0x00 ; 0min.
-		LDI		r25, 0x12 ; 12horas
-		LDI		r26, 0x02 ; Segunda-Feira
-		RCALL	RTC_SETUP_ALARM1
+	LDI		r24, 0x59 ; 59min.
+	LDI		r25, 0x12 ; 12horas
+	LDI		r26, 0x03 ; Terça-Feira
+	RCALL RTC_SETUP	; Setup Hora, alarmes e interrupção
 
-		LDI		r24, 0x00 ; 0min.
-		LDI		r25, 0x12 ; 12horas
-		LDI		r26, 0x03 ; Terça-Feira
-		RCALL	RTC_SETUP_ALARM2
-		
-		RCALL	DISPLAY_SETUP	
+	LDI		r24, 0x00 ; 59min.
+	LDI		r25, 0x13 ; 12horas
+	LDI		r26, 0x03 ; Terça-Feira
+	RCALL	RTC_SETUP_ALARM1
+
+	LDI		r24, 0x02 ; 59min.
+	LDI		r25, 0x13 ; 12horas
+	LDI		r26, 0x03 ; Terça-Feira
+	RCALL	RTC_SETUP_ALARM2
+
+	RCALL DISPLAY_SETUP	
 ;--------------------------------------------------
 ;***** CONFIG. TIMER ************************
 	ldi r16, 0x7A											;31250 (HIGH)
@@ -96,7 +100,7 @@ setup_Incrementos:
 ;**************** LOOP PRINCIPAL *****************		
 loop:
 	loop_exec_run:
-		rcall led_run
+		rcall print_display
 	loop_cp_check_buttons:
 		cpi r28, 0
 		brne loop_button_R
@@ -198,19 +202,39 @@ zera_Leds:
 	out PORTD, r16
 	ret
 ;-------------------------------------------------
+;******************** RUN ************************
+run:
+loop_run:
+	rcall rtc_get_M
+	rcall rtc_get_H
+	rcall rtc_get_D
+	rcall print_display
+	rcall led_run
+	rcall delay
+	ldi r17, 0x00
+	sbis PINC, PC0
+	inc r17
+	sbis PINC, PC1
+	inc r17
+	cpi r17, 0x00
+	breq loop_run
+	ret
+;-------------------------------------------------
 ;***************** Timer_H ***********************
 timer_H:
 	sbic PINC, PC0
 	rjmp timer_H
 	rcall zera_Leds
-	;rcall rtc_get_H	
+	rcall rtc_get_H
 loop_timer_H:
+	rcall rtc_get_H
+	rcall print_hora
+	rcall delay	
 	;sbic PINC, PC2
 	;rcall seta_cima_H
 	;sbic PINC, PC3
 	;rcall seta_baixo_H
  	;rcall rtc_set_H
-	;rcall print_hora
 	sbis PINC, PC0
 	rjmp loop_timer_H
 	rcall delay
@@ -225,6 +249,9 @@ timer_M:
 	;rcall rtc_get_M
 	;rcall print_minuto
 loop_timer_M:
+	rcall rtc_get_M
+	rcall print_minuto
+	rcall delay
 	;sbic PINC, PC2
 	;rcall seta_cima_M
 	;sbic PINC, PC3
@@ -242,9 +269,15 @@ Week:
 	sbic PINC, PC0
 	rjmp Week
 	rcall zera_Leds
-	;ldi r26, 0x01
-	;out PORTB, r26
+	ldi r26, 0x01
+	rcall rtc_set_D
 loop_Week:
+	rcall rtc_get_D
+	in r17, PORTD
+	eor r17, r26 
+	out PORTD, r17
+	rcall print_blank
+	rcall delay
 	;sbic PINC, PC2
 	;rcall seta_cima_D
 	;sbic PINC, PC3
@@ -405,18 +438,18 @@ led_timerH:
 ;**************** led_timerM *********************
 led_timerM:
 	; TOGGLE LED T
-	in r17, PORTD
-	eor r17, r22
-	out PORTD, r17		
+	in r27, PORTD
+	eor r27, r22
+	out PORTD, r27		
 	ret
 ;-------------------------------------------------
 ;*************** led_Week ************************
 led_Week:
 	sbi PORTD, PD4 ; LIGA O LED T
 	; TOGGLE LED W
-	in r17, PORTD
-	eor r17, r23
-	out PORTD, r17 
+	in r27, PORTD
+	eor r27, r19
+	out PORTD, r27 
 	ret
 ;-------------------------------------------------
 ;***************** led_OnH ***********************
@@ -427,18 +460,18 @@ led_OnH:
 ;***************** led_OnM ***********************
 led_OnM:		
 	; TOGGLE LED O
-	in r17, PORTD
-	eor r17, r30
-	out PORTD, r17 
+	in r27, PORTD
+	eor r27, r30
+	out PORTD, r27 
 	ret
 ;-------------------------------------------------
 ;**************** led_WeekOn *********************
 led_WeekOn:
 	sbi PORTD, PD6 ; LIGA O LED O
 	; TOGGLE LED W
-	in r17, PORTD
-	eor r17, r23
-	out PORTD, r17 
+	in r27, PORTD
+	eor r27, r19
+	out PORTD, r27 
 	ret
 ;-------------------------------------------------
 ;***************** led_OffH **********************
@@ -449,18 +482,18 @@ led_OffH:
 ;***************** led_OffM **********************				
 led_OffM:
 	; TOGGLE LED F
-	in r17, PORTD
-	eor r17, r31
-	out PORTD, r17 
+	in r27, PORTD
+	eor r27, r31
+	out PORTD, r27 
 	ret
 ;-------------------------------------------------
 ;*************** led_WeekOff *********************
 led_WeekOff:
 	sbi PORTD, PD7 ; LIGA O LED F
 	; TOGGLE LED W
-	in r17, PORTD
-	eor r17, r23
-	out PORTD, r17
+	in r27, PORTD
+	eor r27, r19
+	out PORTD, r27
 	ret
 ;-------------------------------------------------
 ;************* led_testaIntervalo ****************
@@ -483,15 +516,14 @@ led_clearA:
 ;-------------------------------------------------
 ;**************** seta_cima_H ********************
 seta_cima_H:
-	cpi r25, 0x23
+	ldi r25, 0X0E
+	/*cpi r25, 0x23
 	breq hora_min
 	rcall soma_Hexa_H
 	rjmp seta_cima_hora_end
 hora_min:
 	ldi r25, 0x00	
-seta_cima_hora_end:
-	rcall delay
-	rcall delay
+seta_cima_hora_end:*/
 	ret
 ;-------------------------------------------------
 ;*************** seta_cima_M ********************
@@ -564,30 +596,31 @@ seta_baixo_dia_end:
 ;-------------------------------------------------
 ;*************** soma_hexa_H *********************
 soma_hexa_H:
-	mov r18, r25
-	lsr	r18
-	lsr	r18
-	lsr	r18
-	lsr	r18
-	cpi r18, 0x90 
-	breq MSH_H
+	ldi r17, 0xF0
 	inc r25
+	mov r21, r25
+	swap r21
+	and r21, r17
+	cpi r21, 0XA0
+	breq MSH_H
 	rjmp soma_hexa_hora_end
 MSH_H:
-	ldi r16, 0x07
+	ldi r16, 0x10
 	add r25, r16
-	
+	subi r25, 0x09
 soma_hexa_hora_end:
+	rcall delay
+	rcall delay
 	ret
 ;-------------------------------------------------
 ;*************** soma_hexa_M *********************
 soma_hexa_M:
-	mov r18, r24
-	lsr	r18
-	lsr	r18
-	lsr	r18
-	lsr	r18
-	cpi r18, 0x90
+	mov r17, r24
+	lsr	r17
+	lsr	r17
+	lsr	r17
+	lsr	r17
+	cpi r17, 0x90
 	breq MSH_M
 	inc r24
 	rjmp soma_hexa_minuto_end
@@ -600,12 +633,12 @@ soma_hexa_minuto_end:
 ;-------------------------------------------------
 ;*************** subtrai_hexa_H ******************
 subtrai_hexa_H:
-	mov r18, r25
-	lsr	r18
-	lsr	r18
-	lsr	r18
-	lsr	r18
-	cpi r18, 0x00
+	mov r17, r25
+	lsr	r17
+	lsr	r17
+	lsr	r17
+	lsr	r17
+	cpi r17, 0x00
 	breq LSH_H
 	dec r25
 	rjmp subtrai_hexa_hora_end
@@ -618,12 +651,12 @@ subtrai_hexa_hora_end:
 ;-------------------------------------------------
 ;*************** subtrai_hexa_M ******************
 subtrai_hexa_M:
-	mov r18, r24
-	lsr	r18
-	lsr	r18
-	lsr	r18
-	lsr	r18
-	cpi r18, 0x00
+	mov r17, r24
+	lsr	r17
+	lsr	r17
+	lsr	r17
+	lsr	r17
+	cpi r17, 0x00
 	breq LSH_M
 	dec r24
 	rjmp subtrai_hexa_minuto_end
@@ -717,15 +750,15 @@ reti
 
 ;************* DELAY *****************************
 delay:	
-	ldi  r18, 10
-    ldi  r19, 255
+	ldi  r17, 10
+    ldi  r18, 255
 	ldi  r20, 255
 
 L1: dec  r20
     brne L1
-	dec  r19
+	dec  r18
     brne L1
-    dec  r18
+    dec  r17
     brne L1
 
 	ret
@@ -1051,11 +1084,11 @@ PRINT_DISPLAY:
 	RCALL	RTC_GET_M ; r24 <= SPDR (Resposta do SPI)
 	RCALL	RTC_GET_H ; r25 <= SPDR (Resposta do SPI)
 	RCALL	SPI_MODE_0
-	LDI		r17, 0x04 ;exibir no display 4 as unidades dos minutos
+	LDI		r23, 0x04 ;exibir no display 4 as unidades dos minutos
 	RCALL	DISPLAY_OFF
 	NOP
 	RCALL	DISPLAY_ON
-	MOV		r18, r17
+	MOV		r18, r23
 	RCALL	SPI_TRANSFER
 	MOV		r18, r24 ; r27 <= SPDR (Resposta do SPI) unidade
 	ADD		R18, R16	; para exibir os dois pontos
@@ -1063,18 +1096,18 @@ PRINT_DISPLAY:
 	RCALL	DISPLAY_OFF
 	
 	SWAP	r24 ;Trocar nibbles para exibir a dezena do minuto - Nibble mais significativo é ignorado
-	LDI		r17, 0x03 ;exibir no display 3 as dezenas dos minutos
+	LDI		r23, 0x03 ;exibir no display 3 as dezenas dos minutos
 	RCALL	DISPLAY_ON
-	MOV		r18, r17
+	MOV		r18, r23
 	RCALL	SPI_TRANSFER
 	MOV		r18, r24 ; r27 <= SPDR (Resposta do SPI) unidade
 	ADD		R18, R16	; para exibir os dois pontos
 	RCALL	SPI_TRANSFER
 	RCALL	DISPLAY_OFF
 	
-	LDI		r17, 0x02 ;exibir no display 2
+	LDI		r23, 0x02 ;exibir no display 2
 	RCALL	DISPLAY_ON
-	MOV		r18, r17
+	MOV		r18, r23
 	RCALL	SPI_TRANSFER
 	MOV		r18, r25
 	ADD		R18, R16	; para exibir os dois pontos
@@ -1082,9 +1115,9 @@ PRINT_DISPLAY:
 	RCALL	DISPLAY_OFF
 	
 	SWAP	r25 ;Trocar nibbles para exibir a dezena da hora - Nibble mais significativo é ignorado
-	LDI		r17, 0x01 ;exibir no display 1
+	LDI		r23, 0x01 ;exibir no display 1
 	RCALL	DISPLAY_ON
-	MOV		r18, r17
+	MOV		r18, r23
 	RCALL	SPI_TRANSFER
 	MOV		r18, r25 ; r27 <= SPDR (Resposta do SPI) unidade
 	ADD		r18, r16	; para exibir os dois pontos
@@ -1092,23 +1125,60 @@ PRINT_DISPLAY:
 	RCALL	DISPLAY_OFF
 	RET
 ;------------------------------------
-
-PRINT_MINUTO:
-	RCALL	SPI_MODE_0
-	LDI		r17, 0x04 ;exibir no display 4 as unidades dos minutos
+;************************************
+PRINT_BLANK:
 	RCALL	DISPLAY_OFF
 	NOP
 	RCALL	DISPLAY_ON
-	MOV		r18, r17
+	LDI		r18, 0x04 ;exibir no display 4
+	RCALL	SPI_TRANSFER
+	LDI		r18, 0x7F ;blank
+	RCALL	SPI_TRANSFER
+
+	RCALL	DISPLAY_OFF
+	NOP
+	RCALL	DISPLAY_ON
+	LDI		r18, 0x03 ;exibir no display 3
+	RCALL	SPI_TRANSFER
+	LDI		r18, 0x7F ;blank
+	RCALL	SPI_TRANSFER
+	RCALL	DISPLAY_OFF
+
+	RCALL	DISPLAY_OFF
+	NOP
+	RCALL	DISPLAY_ON
+	LDI		r18, 0x02 ;exibir no display 2
+	RCALL	SPI_TRANSFER
+	LDI		r18, 0x7F ;blank
+	RCALL	SPI_TRANSFER
+
+	RCALL	DISPLAY_OFF
+	NOP
+	RCALL	DISPLAY_ON
+	LDI		r18, 0x01 ;exibir no display 1
+	RCALL	SPI_TRANSFER
+	LDI		r18, 0x7F ;blank
+	RCALL	SPI_TRANSFER
+	RCALL	DISPLAY_OFF
+	;----------------------------
+	RET
+;------------------------------------
+PRINT_MINUTO:
+	RCALL	SPI_MODE_0
+	LDI		r23, 0x04 ;exibir no display 4 as unidades dos minutos
+	RCALL	DISPLAY_OFF
+	NOP
+	RCALL	DISPLAY_ON
+	MOV		r18, r23
 	RCALL	SPI_TRANSFER
 	MOV		r18, r24 ; unidade do minuto
 	RCALL	SPI_TRANSFER
 	RCALL	DISPLAY_OFF
 	
 	SWAP	r24 ;Trocar nibbles para exibir a dezena do minuto - Nibble mais significativo é ignorado
-	LDI		r17, 0x03 ;exibir no display 3 as dezenas dos minutos
+	LDI		r23, 0x03 ;exibir no display 3 as dezenas dos minutos
 	RCALL	DISPLAY_ON
-	MOV		r18, r17
+	MOV		r18, r23
 	RCALL	SPI_TRANSFER
 	MOV		r18, r24 ; dezena do minuto
 	ADD		R18, R16	; para exibir os dois pontos
@@ -1138,20 +1208,20 @@ PRINT_MINUTO:
 
 PRINT_HORA:
 	RCALL	SPI_MODE_0
-	LDI		r17, 0x02 ;exibir no display 2
+	LDI		r23, 0x02 ;exibir no display 2
 	RCALL	DISPLAY_OFF
 	NOP
 	RCALL	DISPLAY_ON
-	MOV		r18, r17
+	MOV		r18, r23
 	RCALL	SPI_TRANSFER
 	MOV		r18, r25 ; unidade da hora
 	RCALL	SPI_TRANSFER
 	RCALL	DISPLAY_OFF
 	
 	SWAP	r25 ;Trocar nibbles para exibir a dezena da hora - Nibble mais significativo é ignorado
-	LDI		r17, 0x01 ;exibir no display 1
+	LDI		r23, 0x01 ;exibir no display 1
 	RCALL	DISPLAY_ON
-	MOV		r18, r17
+	MOV		r18, r23
 	RCALL	SPI_TRANSFER
 	MOV		r18, r25 ; dezena da hora
 	RCALL	SPI_TRANSFER
