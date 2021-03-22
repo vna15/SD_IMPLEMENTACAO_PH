@@ -1,0 +1,184 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.2.8</VERSION>
+ <DEVICE>"ATmega328P"</DEVICE>
+ <WORKING_DIR>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\Debug</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc</DIR>
+  <DIR>C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avrassembler\Include</DIR>
+  <DIR></DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc\m328Pdef.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\Debug\Programador_horario_v2.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>Programador_horario_v2.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>Programador_horario_v2.map</FILE>
+  <FILE>Programador_horario_v2.lss</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <setup_interrupt><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>35</LINE></setup_interrupt>
+  <INT0_vect><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>743</LINE></INT0_vect>
+  <TIMER1_COMPA><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>670</LINE></TIMER1_COMPA>
+  <setup_botoes_led><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>52</LINE></setup_botoes_led>
+  <SETUP_LOOP><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>66</LINE></SETUP_LOOP>
+  <RTC_SETUP><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>853</LINE></RTC_SETUP>
+  <RTC_SETUP_ALARM1><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>862</LINE></RTC_SETUP_ALARM1>
+  <RTC_SETUP_ALARM2><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>870</LINE></RTC_SETUP_ALARM2>
+  <DISPLAY_SETUP><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>818</LINE></DISPLAY_SETUP>
+  <setup_Incrementos><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>102</LINE></setup_Incrementos>
+  <loop><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>109</LINE></loop>
+  <loop_exec_run><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>110</LINE></loop_exec_run>
+  <print_display><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>1079</LINE></print_display>
+  <loop_cp_check_buttons><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>112</LINE></loop_cp_check_buttons>
+  <loop_button_R><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>118</LINE></loop_button_R>
+  <loop_button_A><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>124</LINE></loop_button_A>
+  <loop_exec_check_buttons><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>117</LINE></loop_exec_check_buttons>
+  <incrementeA><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>192</LINE></incrementeA>
+  <cp_timer_H><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>128</LINE></cp_timer_H>
+  <incrementeB><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>200</LINE></incrementeB>
+  <exec_timer_H><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>132</LINE></exec_timer_H>
+  <cp_timer_M><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>134</LINE></cp_timer_M>
+  <timer_H><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>232</LINE></timer_H>
+  <exec_timer_M><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>138</LINE></exec_timer_M>
+  <cp_Week><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>140</LINE></cp_Week>
+  <timer_M><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>252</LINE></timer_M>
+  <exec_Week><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>144</LINE></exec_Week>
+  <cp_On_H><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>146</LINE></cp_On_H>
+  <Week><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>271</LINE></Week>
+  <exec_On_H><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>150</LINE></exec_On_H>
+  <cp_On_M><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>152</LINE></cp_On_M>
+  <On_H><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>297</LINE></On_H>
+  <exec_On_M><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>156</LINE></exec_On_M>
+  <cp_Week_On><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>158</LINE></cp_Week_On>
+  <On_M><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>316</LINE></On_M>
+  <exec_Week_On><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>162</LINE></exec_Week_On>
+  <cp_Off_H><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>164</LINE></cp_Off_H>
+  <Week_On><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>335</LINE></Week_On>
+  <exec_Off_H><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>168</LINE></exec_Off_H>
+  <cp_Off_M><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>170</LINE></cp_Off_M>
+  <Off_H><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>354</LINE></Off_H>
+  <exec_Off_M><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>174</LINE></exec_Off_M>
+  <cp_Week_Off><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>176</LINE></cp_Week_Off>
+  <Off_M><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>373</LINE></Off_M>
+  <exec_Week_Off><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>180</LINE></exec_Week_Off>
+  <cp_testaIntervalo><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>182</LINE></cp_testaIntervalo>
+  <Week_Off><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>392</LINE></Week_Off>
+  <exec_testaIntervalo><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>186</LINE></exec_testaIntervalo>
+  <end_loop><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>188</LINE></end_loop>
+  <testaIntervalo><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>411</LINE></testaIntervalo>
+  <delay><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>750</LINE></delay>
+  <zera_Leds><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>208</LINE></zera_Leds>
+  <run><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>214</LINE></run>
+  <loop_run><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>215</LINE></loop_run>
+  <rtc_get_M><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>1034</LINE></rtc_get_M>
+  <rtc_get_H><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>1049</LINE></rtc_get_H>
+  <rtc_get_D><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>1064</LINE></rtc_get_D>
+  <led_run><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>432</LINE></led_run>
+  <loop_timer_H><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>236</LINE></loop_timer_H>
+  <print_hora><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>1210</LINE></print_hora>
+  <seta_cima_H><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>521</LINE></seta_cima_H>
+  <seta_baixo_H><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>560</LINE></seta_baixo_H>
+  <loop_timer_M><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>256</LINE></loop_timer_M>
+  <print_minuto><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>1166</LINE></print_minuto>
+  <seta_cima_M><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>534</LINE></seta_cima_M>
+  <seta_baixo_M><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>573</LINE></seta_baixo_M>
+  <rtc_set_D><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>990</LINE></rtc_set_D>
+  <loop_Week><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>277</LINE></loop_Week>
+  <print_blank><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>1129</LINE></print_blank>
+  <seta_cima_D><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>547</LINE></seta_cima_D>
+  <seta_baixo_D><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>586</LINE></seta_baixo_D>
+  <loop_On_H><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>302</LINE></loop_On_H>
+  <loop_On_M><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>321</LINE></loop_On_M>
+  <loop_Week_On><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>340</LINE></loop_Week_On>
+  <loop_Off_H><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>359</LINE></loop_Off_H>
+  <loop_Off_M><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>378</LINE></loop_Off_M>
+  <loop_Week_Off><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>397</LINE></loop_Week_Off>
+  <loop_testaIntervalo><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>414</LINE></loop_testaIntervalo>
+  <clearR><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>421</LINE></clearR>
+  <led_clearR><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>509</LINE></led_clearR>
+  <clearA><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>426</LINE></clearA>
+  <led_clearA><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>515</LINE></led_clearA>
+  <led_timerH><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>437</LINE></led_timerH>
+  <led_timerM><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>442</LINE></led_timerM>
+  <led_Week><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>450</LINE></led_Week>
+  <led_OnH><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>459</LINE></led_OnH>
+  <led_OnM><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>464</LINE></led_OnM>
+  <led_WeekOn><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>472</LINE></led_WeekOn>
+  <led_OffH><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>481</LINE></led_OffH>
+  <led_OffM><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>486</LINE></led_OffM>
+  <led_WeekOff><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>494</LINE></led_WeekOff>
+  <led_testaIntervalo><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>503</LINE></led_testaIntervalo>
+  <hora_min><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>527</LINE></hora_min>
+  <soma_Hexa_H><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>599</LINE></soma_Hexa_H>
+  <seta_cima_hora_end><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>529</LINE></seta_cima_hora_end>
+  <RTC_SET_H><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>948</LINE></RTC_SET_H>
+  <minuto_min><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>540</LINE></minuto_min>
+  <soma_Hexa_M><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>618</LINE></soma_Hexa_M>
+  <seta_cima_minuto_end><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>542</LINE></seta_cima_minuto_end>
+  <RTC_SET_M><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>906</LINE></RTC_SET_M>
+  <dia_min><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>553</LINE></dia_min>
+  <seta_cima_dia_end><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>555</LINE></seta_cima_dia_end>
+  <hora_max><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>566</LINE></hora_max>
+  <subtrai_Hexa_H><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>635</LINE></subtrai_Hexa_H>
+  <seta_baixo_hora_end><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>568</LINE></seta_baixo_hora_end>
+  <minuto_max><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>579</LINE></minuto_max>
+  <subtrai_Hexa_M><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>652</LINE></subtrai_Hexa_M>
+  <seta_baixo_minuto_end><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>581</LINE></seta_baixo_minuto_end>
+  <dia_max><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>592</LINE></dia_max>
+  <seta_baixo_dia_end><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>594</LINE></seta_baixo_dia_end>
+  <MSH_H><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>608</LINE></MSH_H>
+  <soma_hexa_hora_end><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>612</LINE></soma_hexa_hora_end>
+  <MSH_M><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>625</LINE></MSH_M>
+  <soma_hexa_minuto_end><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>629</LINE></soma_hexa_minuto_end>
+  <LSH_H><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>642</LINE></LSH_H>
+  <subtrai_hexa_hora_end><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>646</LINE></subtrai_hexa_hora_end>
+  <LSH_M><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>659</LINE></LSH_M>
+  <subtrai_hexa_minuto_end><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>663</LINE></subtrai_hexa_minuto_end>
+  <t_cp_OnH><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>671</LINE></t_cp_OnH>
+  <t_exec_OnH><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>675</LINE></t_exec_OnH>
+  <t_cp_OnM><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>677</LINE></t_cp_OnM>
+  <t_exec_OnM><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>681</LINE></t_exec_OnM>
+  <t_cp_WeekOn><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>683</LINE></t_cp_WeekOn>
+  <t_exec_WeekOn><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>687</LINE></t_exec_WeekOn>
+  <t_cp_OffH><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>689</LINE></t_cp_OffH>
+  <t_exec_OffH><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>693</LINE></t_exec_OffH>
+  <t_cp_OffM><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>695</LINE></t_cp_OffM>
+  <t_exec_OffM><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>699</LINE></t_exec_OffM>
+  <t_cp_WeekOff><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>701</LINE></t_cp_WeekOff>
+  <t_exec_WeekOff><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>705</LINE></t_exec_WeekOff>
+  <t_cp_testaIntervalo><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>707</LINE></t_cp_testaIntervalo>
+  <t_exec_testaIntervalo><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>711</LINE></t_exec_testaIntervalo>
+  <t_cp_timerH><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>714</LINE></t_cp_timerH>
+  <t_exec_timerH><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>718</LINE></t_exec_timerH>
+  <t_cp_timerM><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>720</LINE></t_cp_timerM>
+  <t_exec_timerM><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>724</LINE></t_exec_timerM>
+  <t_cp_Week><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>726</LINE></t_cp_Week>
+  <t_exec_Week><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>730</LINE></t_exec_Week>
+  <t_cp_clearR><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>732</LINE></t_cp_clearR>
+  <t_exec_clearR><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>736</LINE></t_exec_clearR>
+  <t_fim><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>738</LINE></t_fim>
+  <L1><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>755</LINE></L1>
+  <DISPLAY_ON><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>766</LINE></DISPLAY_ON>
+  <DISPLAY_OFF><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>773</LINE></DISPLAY_OFF>
+  <RTC_ON><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>780</LINE></RTC_ON>
+  <RTC_OFF><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>787</LINE></RTC_OFF>
+  <SPI_MODE_0><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>794</LINE></SPI_MODE_0>
+  <SPI_MODE_1><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>801</LINE></SPI_MODE_1>
+  <SPI_TRANSFER><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>808</LINE></SPI_TRANSFER>
+  <SPI_WAIT_TRANSFER><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>810</LINE></SPI_WAIT_TRANSFER>
+  <RTC_SET_CONTROL_REGISTER><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>878</LINE></RTC_SET_CONTROL_REGISTER>
+  <RTC_SET_M_A1><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>920</LINE></RTC_SET_M_A1>
+  <RTC_SET_H_A1><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>962</LINE></RTC_SET_H_A1>
+  <RTC_SET_D_A1><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>1004</LINE></RTC_SET_D_A1>
+  <RTC_SET_M_A2><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>934</LINE></RTC_SET_M_A2>
+  <RTC_SET_H_A2><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>976</LINE></RTC_SET_H_A2>
+  <RTC_SET_D_A2><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>1019</LINE></RTC_SET_D_A2>
+  <RTC_RESET_ALARMS><FILE>c:\users\lucas\Documents\Atmel Studio\7.0\Programador_horario_v2\Programador_horario_v2\main.asm</FILE><LINE>892</LINE></RTC_RESET_ALARMS>
+ </LABELS>
+</ASSEMBLER_INFO>
