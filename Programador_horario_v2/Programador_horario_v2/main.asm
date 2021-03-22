@@ -241,7 +241,6 @@ loop_timer_H:
 	rcall seta_cima_H
 	sbic PINC, PC3
 	rcall seta_baixo_H
- 	;rcall rtc_set_H
 	sbis PINC, PC0
 	rjmp loop_timer_H
 	rcall delay
@@ -277,7 +276,7 @@ Week:
 loop_Week:
 	rcall rtc_get_D
 	in r17, PORTD
-	eor r17, r26 
+	or r17, r26 
 	out PORTD, r17
 	rcall print_blank
 	rcall delay
@@ -285,8 +284,6 @@ loop_Week:
 	rcall seta_cima_D
 	sbic PINC, PC3
 	rcall seta_baixo_D
-	;rcall rtc_set_D
-	;out PORTB, r26
 	sbis PINC, PC0
 	rjmp loop_Week
 	rcall delay
@@ -298,14 +295,13 @@ On_H:
 	sbic PINC, PC1
 	rjmp On_H
 	rcall zera_Leds
-	;rcall rtc_get_H	
+	rcall rtc_get_H	
 loop_On_H:
-	;sbic PINC, PC2
-	;rcall seta_cima_H
-	;sbic PINC, PC3
-	;rcall seta_baixo_H
- 	;rcall rtc_set_H
-	;rcall print_hora
+	rcall print_hora
+	sbic PINC, PC2
+	rcall seta_cima_H_A
+	sbic PINC, PC3
+	rcall seta_baixo_H_A
 	sbis PINC, PC1
 	rjmp loop_On_H
 	rcall delay
@@ -317,14 +313,13 @@ On_M:
 	sbic PINC, PC1
 	rjmp On_M
 	rcall zera_Leds
-	;rcall rtc_get_H	
+	rcall rtc_get_M	
 loop_On_M:
-	;sbic PINC, PC2
-	;rcall seta_cima_H
-	;sbic PINC, PC3
-	;rcall seta_baixo_H
- 	;rcall rtc_set_H
-	;rcall print_hora
+	rcall print_minuto
+	sbic PINC, PC2
+	rcall seta_cima_M_A
+	sbic PINC, PC3
+	rcall seta_baixo_M_A
 	sbis PINC, PC1
 	rjmp loop_On_M
 	rcall delay
@@ -336,14 +331,16 @@ Week_On:
 	sbic PINC, PC1
 	rjmp Week_On
 	rcall zera_Leds
-	;rcall rtc_get_H	
+	rcall rtc_get_D
 loop_Week_On:
-	;sbic PINC, PC2
-	;rcall seta_cima_H
-	;sbic PINC, PC3
-	;rcall seta_baixo_H
- 	;rcall rtc_set_H
-	;rcall print_hora
+	in r17, PORTD
+	eor r17, r26 
+	out PORTD, r17
+	rcall print_blank
+	sbic PINC, PC2
+	rcall seta_cima_D_A
+	sbic PINC, PC3
+	rcall seta_baixo_D_A
 	sbis PINC, PC1
 	rjmp loop_Week_On
 	rcall delay
@@ -355,14 +352,14 @@ Off_H:
 	sbic PINC, PC1
 	rjmp Off_H
 	rcall zera_Leds
-	;rcall rtc_get_H	
+	rcall rtc_get_H	
 loop_Off_H:
-	;sbic PINC, PC2
-	;rcall seta_cima_H
-	;sbic PINC, PC3
-	;rcall seta_baixo_H
- 	;rcall rtc_set_H
-	;rcall print_hora
+	rcall print_hora
+	sbic PINC, PC2
+	rcall seta_cima_H_A
+	sbic PINC, PC3
+	rcall seta_baixo_H_A
+ 	rcall rtc_set_H
 	sbis PINC, PC1
 	rjmp loop_Off_H
 	rcall delay
@@ -374,14 +371,13 @@ Off_M:
 	sbic PINC, PC1
 	rjmp Off_M
 	rcall zera_Leds
-	;rcall rtc_get_H	
+	rcall rtc_get_M	
 loop_Off_M:
-	;sbic PINC, PC2
-	;rcall seta_cima_H
-	;sbic PINC, PC3
-	;rcall seta_baixo_H
- 	;rcall rtc_set_H
-	;rcall print_hora
+	rcall print_minuto
+	sbic PINC, PC2
+	rcall seta_cima_M_A
+	sbic PINC, PC3
+	rcall seta_baixo_M_A
 	sbis PINC, PC1
 	rjmp loop_Off_M
 	rcall delay
@@ -393,14 +389,13 @@ Week_Off:
 	sbic PINC, PC1
 	rjmp Week_Off
 	rcall zera_Leds
-	;rcall rtc_get_H	
+	rcall rtc_get_D	
 loop_Week_Off:
-	;sbic PINC, PC2
-	;rcall seta_cima_H
-	;sbic PINC, PC3
-	;rcall seta_baixo_H
- 	;rcall rtc_set_H
-	;rcall print_hora
+	rcall print_blank
+	sbic PINC, PC2
+	rcall seta_cima_D_A
+	sbic PINC, PC3
+	rcall seta_baixo_D_A
 	sbis PINC, PC1
 	rjmp loop_Week_Off
 	rcall delay
@@ -538,7 +533,7 @@ seta_cima_M:
 	rcall soma_Hexa_M
 	rjmp seta_cima_minuto_end
 minuto_min:
-	ldi r25, 0x00	
+	ldi r24, 0x00	
 seta_cima_minuto_end:
 	RCALL RTC_SET_M
 	ret
@@ -546,13 +541,17 @@ seta_cima_minuto_end:
 ;*************** seta_cima_D ********************
 seta_cima_D:
 	rcall delay
-	cpi r26, 0x07
+	rcall delay
+	mov r21, r26
+	andi r21, 0x0F
+	cpi r21, 0x07
 	breq dia_min
 	inc r26
 	rjmp seta_cima_dia_end
 dia_min:
-	ldi r25, 0x01	
+	ldi r26, 0x01
 seta_cima_dia_end:
+	rcall delay
 	RCALL RTC_SET_D
 	ret
 ;-------------------------------------------------
@@ -585,20 +584,106 @@ seta_baixo_minuto_end:
 ;*************** seta_baixo_D ********************
 seta_baixo_D:
 	rcall delay
-	cpi r26, 0x01
+	rcall delay
+	mov r21, r26
+	andi r21, 0x0F
+	cpi r21, 0x01
 	breq dia_max
 	dec r26
 	rjmp seta_baixo_dia_end
 dia_max:
-	ldi r25, 0x07	
+	ldi r26, 0x07	
 seta_baixo_dia_end:
 	RCALL RTC_SET_D
 	ret
 ;-------------------------------------------------
+;**************** seta_cima_H_A ********************
+seta_cima_H_A:
+	rcall delay
+	cpi r25, 0x23
+	breq hora_min
+	rcall soma_Hexa_H
+	rjmp seta_cima_hora_end_A
+hora_min_A:
+	ldi r25, 0x00
+seta_cima_hora_end_A:
+	RCALL RTC_SET_H_A1	
+	ret
+;-------------------------------------------------
+;*************** seta_cima_M_A ********************
+seta_cima_M_A:
+	rcall delay
+	cpi r24, 0x59
+	breq minuto_min_A
+	rcall soma_Hexa_M
+	rjmp seta_cima_minuto_end_A
+minuto_min_A:
+	ldi r24, 0x00	
+seta_cima_minuto_end_A:
+	RCALL RTC_SET_M_A1
+	ret
+;-------------------------------------------------
+;*************** seta_cima_D_A ********************
+seta_cima_D_A:
+	rcall delay
+	rcall delay
+	mov r21, r26
+	andi r21, 0x0F
+	cpi r21, 0x07
+	breq dia_min_A
+	inc r26
+	rjmp seta_cima_dia_end_A
+dia_min_A:
+	ldi r26, 0x01	
+seta_cima_dia_end_A:
+	RCALL RTC_SET_D_A1
+	ret
+;-------------------------------------------------
+;*************** seta_baixo_H_A ********************
+seta_baixo_H_A:
+	rcall delay
+	cpi r25, 0x00
+	breq hora_max_A
+	rcall subtrai_Hexa_H
+	rjmp seta_baixo_hora_end_A
+hora_max_A:
+	ldi r25, 0x23	
+seta_baixo_hora_end_A:
+	RCALL RTC_SET_H_A2
+	ret
+;-------------------------------------------------
+;*************** seta_baixo_M_A ********************
+seta_baixo_M_A:
+	rcall delay
+	cpi r24, 0x00
+	breq minuto_max_A
+	rcall subtrai_Hexa_M
+	rjmp seta_baixo_minuto_end_A
+minuto_max_A:
+	ldi r24, 0x59	
+seta_baixo_minuto_end_A:
+	RCALL RTC_SET_M_A2
+	ret
+;-------------------------------------------------
+;*************** seta_baixo_D_A ********************
+seta_baixo_D_A:
+	rcall delay
+	rcall delay
+	mov r21, r26
+	andi r21, 0x0F
+	cpi r21, 0x01
+	breq dia_max_A
+	dec r26
+	rjmp seta_baixo_dia_end_A
+dia_max_A:
+	ldi r26, 0x07	
+seta_baixo_dia_end_A:
+	RCALL RTC_SET_D_A2
+	rcall delay
+	ret
+;-------------------------------------------------
 ;*************** soma_hexa_H *********************
 soma_hexa_H:
-	
-	;inc r25
 	mov r21, r25
 	andi r21, 0x0F
 	cpi r21, 0x09
@@ -610,7 +695,6 @@ MSH_H:
 	add r25, r16
 	subi r25, 0x09
 soma_hexa_hora_end:
-	rcall delay
 	rcall delay
 	ret
 ;-------------------------------------------------
@@ -628,7 +712,6 @@ MSH_M:
 	subi r24, 0x09
 soma_hexa_minuto_end:
 	rcall delay
-	rcall delay
 	ret
 ;-------------------------------------------------
 ;*************** subtrai_hexa_H ******************
@@ -645,7 +728,6 @@ LSH_H:
 	add  r25, r16
 subtrai_hexa_hora_end:
 	rcall delay
-	rcall delay
 	ret
 ;-------------------------------------------------
 ;*************** subtrai_hexa_M ******************
@@ -661,7 +743,6 @@ LSH_M:
 	ldi	r16, 0x09
 	add r24, r16
 subtrai_hexa_minuto_end:
-	rcall delay
 	rcall delay
 	ret
 ;-------------------------------------------------
@@ -1127,41 +1208,14 @@ PRINT_DISPLAY:
 ;------------------------------------
 ;************************************
 PRINT_BLANK:
-	RCALL	DISPLAY_OFF
-	NOP
-	RCALL	DISPLAY_ON
-	LDI		r18, 0x04 ;exibir no display 4
-	RCALL	SPI_TRANSFER
-	LDI		r18, 0x7F ;blank
-	RCALL	SPI_TRANSFER
-
-	RCALL	DISPLAY_OFF
-	NOP
-	RCALL	DISPLAY_ON
-	LDI		r18, 0x03 ;exibir no display 3
-	RCALL	SPI_TRANSFER
-	LDI		r18, 0x7F ;blank
-	RCALL	SPI_TRANSFER
-	RCALL	DISPLAY_OFF
-
-	RCALL	DISPLAY_OFF
-	NOP
-	RCALL	DISPLAY_ON
-	LDI		r18, 0x02 ;exibir no display 2
-	RCALL	SPI_TRANSFER
-	LDI		r18, 0x7F ;blank
-	RCALL	SPI_TRANSFER
-
-	RCALL	DISPLAY_OFF
-	NOP
-	RCALL	DISPLAY_ON
-	LDI		r18, 0x01 ;exibir no display 1
-	RCALL	SPI_TRANSFER
-	LDI		r18, 0x7F ;blank
-	RCALL	SPI_TRANSFER
-	RCALL	DISPLAY_OFF
-	;----------------------------
-	RET
+rcall spi_mode_0
+rcall display_on
+ldi r18, 0x0C
+rcall spi_transfer
+ldi r18, 0x00
+rcall spi_transfer
+rcall display_off
+ret
 ;------------------------------------
 PRINT_MINUTO:
 	RCALL	SPI_MODE_0
