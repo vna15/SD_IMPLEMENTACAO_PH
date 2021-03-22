@@ -90,35 +90,89 @@ setup_botoes_led:
 setup_Incrementos:
 	clr r28
 	clr r29
+	clr r16
 	rjmp loop
 
 ;**************** LOOP PRINCIPAL *****************		
-loop:	
+loop:
 	loop_exec_run:
 		rcall led_run
+	loop_cp_check_buttons:
+		cpi r28, 0
+		brne loop_button_R
+		cpi r29, 0
+		brne loop_button_A
 	loop_exec_check_buttons:
-		sbic PINC, PC0	; R
-		rcall incrementeA
-		sbic PINC, PC1	; A
-		call incrementeB
+		loop_button_R:
+			sbic PINC, PC0	; R
+			rcall incrementeA
+			clr r16	
+			cpse r28, r16
+			rjmp cp_timer_H
+		loop_button_A:
+			sbic PINC, PC1	; A
+			call incrementeB
+			rjmp cp_timer_H
 	cp_timer_H:
-		cpi r29, 1
+		cpi r28, 1
 		breq exec_timer_H
 		rjmp cp_timer_M
 	exec_timer_H:
-		rjmp timer_H
+		rcall timer_H
 	cp_timer_M:
-		cpi r29, 2
+		cpi r28, 2
 		breq exec_timer_M
 		rjmp cp_Week
 	exec_timer_M:
 		rcall timer_M
 	cp_Week:
-		cpi r29, 3
+		cpi r28, 3
 		breq exec_Week
-		rjmp end_loop
+		rjmp cp_On_H
 	exec_Week:
-		rcall Week		
+		rcall Week
+	cp_On_H:
+		cpi r29, 1
+		breq exec_On_H
+		rjmp cp_On_M
+	exec_On_H:
+		rcall On_H
+	cp_On_M:
+		cpi r29, 2
+		breq exec_On_M
+		rjmp cp_Week_On
+	exec_On_M:
+		rcall On_M
+	cp_Week_On:
+		cpi r29, 3
+		breq exec_Week_On
+		rjmp cp_Off_H
+	exec_Week_On:
+		rcall Week_On
+	cp_Off_H:
+		cpi r29, 4
+		breq exec_Off_H
+		rjmp cp_Off_M
+	exec_Off_H:
+		rcall Off_H
+	cp_Off_M:
+		cpi r29, 5
+		breq exec_Off_M
+		rjmp cp_Week_Off
+	exec_Off_M:
+		rcall Off_M
+	cp_Week_Off:
+		cpi r29, 6
+		breq exec_Week_Off
+		rjmp cp_testaIntervalo
+	exec_Week_Off:
+		rcall Week_Off
+	cp_testaIntervalo:
+		cpi r29, 7
+		breq exec_testaIntervalo
+		rjmp end_loop
+	exec_testaIntervalo:
+		rcall testaIntervalo
 	end_loop:
 		rjmp loop
 ;-------------------------------------------------	
@@ -130,23 +184,11 @@ incrementeA:
 	call delay
 	ret
 ;-------------------------------------------------
-;****************** zereA ************************
-zereA:
-	clr r28
-	call delay
-	ret
-;-------------------------------------------------
 ;*************** incrementeB *********************
 incrementeB:
 	sbic PINC, PC1
 	rjmp incrementeB
 	inc r29
-	;call delay
-	ret
-;-------------------------------------------------
-;****************** zereB ************************
-zereB:
-	clr r29
 	call delay
 	ret
 ;-------------------------------------------------
@@ -173,7 +215,7 @@ loop_timer_H:
 	rjmp loop_timer_H
 	rcall delay
 	rcall incrementeA
-	rjmp cp_timer_M
+	ret
 ;-------------------------------------------------
 ;***************** Timer_M ***********************
 timer_M:
@@ -215,9 +257,228 @@ loop_Week:
 	rcall incrementeA
 	ret
 ;-------------------------------------------------
+;******************** ON_H ***********************
+On_H:
+	sbic PINC, PC1
+	rjmp On_H
+	rcall zera_Leds
+	;rcall rtc_get_H	
+loop_On_H:
+	;sbic PINC, PC2
+	;rcall seta_cima_H
+	;sbic PINC, PC3
+	;rcall seta_baixo_H
+ 	;rcall rtc_set_H
+	;rcall print_hora
+	sbis PINC, PC1
+	rjmp loop_On_H
+	rcall delay
+	rcall incrementeB
+	ret
+;-------------------------------------------------
+;******************** ON_M ***********************
+On_M:
+	sbic PINC, PC1
+	rjmp On_M
+	rcall zera_Leds
+	;rcall rtc_get_H	
+loop_On_M:
+	;sbic PINC, PC2
+	;rcall seta_cima_H
+	;sbic PINC, PC3
+	;rcall seta_baixo_H
+ 	;rcall rtc_set_H
+	;rcall print_hora
+	sbis PINC, PC1
+	rjmp loop_On_M
+	rcall delay
+	rcall incrementeB
+	ret
+;-------------------------------------------------
+;****************** Week_On **********************
+Week_On:
+	sbic PINC, PC1
+	rjmp Week_On
+	rcall zera_Leds
+	;rcall rtc_get_H	
+loop_Week_On:
+	;sbic PINC, PC2
+	;rcall seta_cima_H
+	;sbic PINC, PC3
+	;rcall seta_baixo_H
+ 	;rcall rtc_set_H
+	;rcall print_hora
+	sbis PINC, PC1
+	rjmp loop_Week_On
+	rcall delay
+	rcall incrementeB
+	ret
+;-------------------------------------------------
+;******************* Off_H ***********************
+Off_H:
+	sbic PINC, PC1
+	rjmp Off_H
+	rcall zera_Leds
+	;rcall rtc_get_H	
+loop_Off_H:
+	;sbic PINC, PC2
+	;rcall seta_cima_H
+	;sbic PINC, PC3
+	;rcall seta_baixo_H
+ 	;rcall rtc_set_H
+	;rcall print_hora
+	sbis PINC, PC1
+	rjmp loop_Off_H
+	rcall delay
+	rcall incrementeB
+	ret
+;-------------------------------------------------
+;******************* Off_M ***********************
+Off_M:
+	sbic PINC, PC1
+	rjmp Off_M
+	rcall zera_Leds
+	;rcall rtc_get_H	
+loop_Off_M:
+	;sbic PINC, PC2
+	;rcall seta_cima_H
+	;sbic PINC, PC3
+	;rcall seta_baixo_H
+ 	;rcall rtc_set_H
+	;rcall print_hora
+	sbis PINC, PC1
+	rjmp loop_Off_M
+	rcall delay
+	rcall incrementeB
+	ret
+;-------------------------------------------------
+;****************** Week_Off *********************
+Week_Off:
+	sbic PINC, PC1
+	rjmp Week_Off
+	rcall zera_Leds
+	;rcall rtc_get_H	
+loop_Week_Off:
+	;sbic PINC, PC2
+	;rcall seta_cima_H
+	;sbic PINC, PC3
+	;rcall seta_baixo_H
+ 	;rcall rtc_set_H
+	;rcall print_hora
+	sbis PINC, PC1
+	rjmp loop_Week_Off
+	rcall delay
+	rcall incrementeB
+	ret
+;-------------------------------------------------
+;*************** testaIntervalo ******************
+testaIntervalo:
+	sbic PINC, PC1
+	rjmp testaIntervalo
+loop_testaIntervalo:
+	sbis PINC, PC1
+	rjmp loop_testaIntervalo
+	rcall delay
+	ret
+;-------------------------------------------------
 ;***************** clearR ************************
 clearR:
 	rcall led_clearR
+	ret
+;-------------------------------------------------
+;***************** clearA ************************
+clearA:
+	rcall led_clearA
+	ret
+;-------------------------------------------------
+; LEDS ------------LEDS ------------LEDS----------
+;***************** led_run ***********************
+led_run:
+	out PORTB, r26 ;
+ret
+;-------------------------------------------------
+;**************** led_timerH *********************
+led_timerH:
+	sbi PORTD, PD4 ; LIGA O LED T
+	ret	
+;-------------------------------------------------
+;**************** led_timerM *********************
+led_timerM:
+	; TOGGLE LED T
+	in r17, PORTD
+	eor r17, r22
+	out PORTD, r17		
+	ret
+;-------------------------------------------------
+;*************** led_Week ************************
+led_Week:
+	sbi PORTD, PD4 ; LIGA O LED T
+	; TOGGLE LED W
+	in r17, PORTD
+	eor r17, r23
+	out PORTD, r17 
+	ret
+;-------------------------------------------------
+;***************** led_OnH ***********************
+led_OnH:
+	sbi PORTD, PD6 ; LIGA O LED O
+	ret
+;-------------------------------------------------
+;***************** led_OnM ***********************
+led_OnM:		
+	; TOGGLE LED O
+	in r17, PORTD
+	eor r17, r30
+	out PORTD, r17 
+	ret
+;-------------------------------------------------
+;**************** led_WeekOn *********************
+led_WeekOn:
+	sbi PORTD, PD6 ; LIGA O LED O
+	; TOGGLE LED W
+	in r17, PORTD
+	eor r17, r23
+	out PORTD, r17 
+	ret
+;-------------------------------------------------
+;***************** led_OffH **********************
+led_OffH:
+	sbi PORTD, PD7 ; LIGA O LED F
+	ret
+;-------------------------------------------------
+;***************** led_OffM **********************				
+led_OffM:
+	; TOGGLE LED F
+	in r17, PORTD
+	eor r17, r31
+	out PORTD, r17 
+	ret
+;-------------------------------------------------
+;*************** led_WeekOff *********************
+led_WeekOff:
+	sbi PORTD, PD7 ; LIGA O LED F
+	; TOGGLE LED W
+	in r17, PORTD
+	eor r17, r23
+	out PORTD, r17
+	ret
+;-------------------------------------------------
+;************* led_testaIntervalo ****************
+led_testaIntervalo:
+	clr r29
+	out PORTD, r29
+	ret
+;-------------------------------------------------
+;*************** led_clearR **********************
+led_clearR:
+	clr r28
+	out PORTD, r28
+	ret
+;-------------------------------------------------
+;*************** led_clearA **********************
+led_clearA:
+	clr r29
+	out PORTD, r29
 	ret
 ;-------------------------------------------------
 ;**************** seta_cima_H ********************
@@ -373,157 +634,72 @@ LSH_M:
 subtrai_hexa_minuto_end:
 	ret
 ;-------------------------------------------------
-;***************** led_run ***********************
-led_run:
-	out PORTB, r26 ; RECEBE O CONTEÚDO DE r19 
-ret
-;-------------------------------------------------
-;**************** led_timerH *********************
-led_timerH:
-	sbi PORTD, PD4 ; LIGA O LED T
-	ret	
-;-------------------------------------------------
-;**************** led_timerM *********************
-led_timerM:
-	; TOGGLE LED T
-	in r17, PORTD
-	eor r17, r22
-	out PORTD, r17 		
-	ret
-;-------------------------------------------------
-;*************** led_Week ************************
-led_Week:
-	sbi PORTD, PD4 ; LIGA O LED T
-	; TOGGLE LED W
-	in r17, PORTD
-	eor r17, r23
-	out PORTD, r17 
-	ret
-;-------------------------------------------------
-;*************** led_clearR ************************
-led_clearR:
-	clr r28
-	out PORTD, r28
-	ret
-;-------------------------------------------------
-;***************** led_OnH ***********************
-led_OnH:
-	sbic PINC, PC1
-	rjmp led_OnH
-	sbi PORTD, PD6 ; LIGA O LED O
-	ret
-;-------------------------------------------------
-;***************** led_OnM ***********************
-led_OnM:
-	sbic PINC, PC1
-	rjmp led_OnM		
-	; TOGGLE LED O
-	in r17, PORTD
-	eor r17, r30
-	out PORTD, r17 
-	ret
-;-------------------------------------------------
-;**************** led_WeekOn *********************
-led_WeekOn:
-	sbi PORTD, PD6 ; LIGA O LED O
-	; TOGGLE LED W
-	in r17, PORTD
-	eor r17, r23
-	out PORTD, r17 
-	ret
-;-------------------------------------------------
-;***************** led_OffH **********************
-led_OffH:
-	sbi PORTD, PD7 ; LIGA O LED F
-	ret
-;-------------------------------------------------
-;***************** led_OffM **********************				
-led_OffM:
-	; TOGGLE LED F
-	in r17, PORTD
-	eor r17, r31
-	out PORTD, r17 
-	ret
-;-------------------------------------------------
-;*************** led_WeekOff *********************
-led_WeekOff:
-	sbi PORTD, PD7 ; LIGA O LED F
-	; TOGGLE LED W
-	in r17, PORTD
-	eor r17, r23
-	out PORTD, r17
-	ret
-;-------------------------------------------------
-;************** testaIntervalo *******************
-testaIntervalo:
-	clr r29
-	out PORTD, r29
-	ret
-;-------------------------------------------------
+
 ;************** VETOR INTERRUPÇÂO ****************
 TIMER1_COMPA:
 	t_cp_OnH:
-		cpi r28, 1
+		cpi r29, 1
 		breq t_exec_OnH
 		rjmp t_cp_OnM
 	t_exec_OnH:
 		rcall led_OnH
 	t_cp_OnM:
-		cpi r28, 2
+		cpi r29, 2
 		breq t_exec_OnM
 		rjmp t_cp_WeekOn
 	t_exec_OnM:
 		rcall led_OnM
 	t_cp_WeekOn:
-		cpi r28, 3
+		cpi r29, 3
 		breq t_exec_WeekOn
 		rjmp t_cp_OffH
 	t_exec_WeekOn:
 		rcall led_WeekOn
 	t_cp_OffH:
-		cpi r28, 4
-		breq led_OffH
+		cpi r29, 4
+		breq t_exec_OffH
 		rjmp t_cp_OffM
 	t_exec_OffH:
 		rcall led_OffH
 	t_cp_OffM:
-		cpi r28, 5
+		cpi r29, 5
 		breq t_exec_OffM
 		rjmp t_cp_WeekOff
 	t_exec_OffM:
 		rcall led_OffM
 	t_cp_WeekOff:
-		cpi r28, 6
+		cpi r29, 6
 		breq t_exec_WeekOff
 		rjmp t_cp_testaIntervalo
 	t_exec_WeekOff:
 		rcall led_WeekOff
 	t_cp_testaIntervalo:
-		cpi r28, 7
+		cpi r29, 7
 		breq t_exec_testaIntervalo
 		rjmp t_cp_timerH
 	t_exec_testaIntervalo:
-		rcall testaIntervalo
+		rcall led_clearA
+		rcall led_testaIntervalo
 	t_cp_timerH:	
-		cpi r29, 1
+		cpi r28, 1
 		breq t_exec_timerH
 		rjmp t_cp_timerM
 	t_exec_timerH:
 		rcall led_timerH
 	t_cp_timerM:
-		cpi r29, 2
+		cpi r28, 2
 		breq t_exec_timerM
 		rjmp t_cp_Week
 	t_exec_timerM:
 		rcall led_timerM
 	t_cp_Week:
-		cpi r29, 3
+		cpi r28, 3
 		breq t_exec_Week
 		rjmp t_cp_clearR
 	t_exec_Week:
 		rcall led_Week
 	t_cp_clearR:
-		cpi r29, 4
+		cpi r28, 4
 		breq t_exec_clearR
 		rjmp t_fim
 	t_exec_clearR:

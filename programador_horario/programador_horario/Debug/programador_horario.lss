@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.8  C:\Users\lucas\Documents\Atmel Studio\7.0\programador_horario\programador_horario\main.asm Sun Mar 21 20:40:40 2021
+AVRASM ver. 2.2.8  C:\Users\lucas\Documents\Atmel Studio\7.0\programador_horario\programador_horario\main.asm Mon Mar 22 00:56:16 2021
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc\m328Pdef.inc'
 C:\Users\lucas\Documents\Atmel Studio\7.0\programador_horario\programador_horario\main.asm(17): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc\m328Pdef.inc'
@@ -1049,10 +1049,10 @@ C:\Users\lucas\Documents\Atmel Studio\7.0\programador_horario\programador_horari
                                  		.org 0x00 
 000000 c016                      			rjmp setup_interrupt  
                                  		.org INT0addr
-000002 c148                      			rjmp INT0_vect
+000002 c19f                      			rjmp INT0_vect
                                  		.org 0x34        
                                  		.org 0x0016 
-000016 c107                      			rjmp TIMER1_COMPA
+000016 c15d                      			rjmp TIMER1_COMPA
                                  
                                  ;********* CONFIG INT. EXTER *****************
                                  setup_interrupt:
@@ -1089,19 +1089,19 @@ C:\Users\lucas\Documents\Atmel Studio\7.0\programador_horario\programador_horari
 00002a e380                      		LDI		r24, 0x30 ; 0min.
 00002b e192                      		LDI		r25, 0x12 ; 0horas
 00002c e0a1                      		LDI		r26, 0x01 ; DOMINGO
-00002d d15e                      		RCALL RTC_SETUP	 
+00002d d1b5                      		RCALL RTC_SETUP	 
                                  
 00002e e080                      		LDI		r24, 0x00 ; 0min.
 00002f e192                      		LDI		r25, 0x12 ; 12horas
 000030 e0a2                      		LDI		r26, 0x02 ; Segunda-Feira
-000031 d15f                      		RCALL	RTC_SETUP_ALARM1
+000031 d1b6                      		RCALL	RTC_SETUP_ALARM1
                                  
 000032 e080                      		LDI		r24, 0x00 ; 0min.
 000033 e192                      		LDI		r25, 0x12 ; 12horas
 000034 e0a3                      		LDI		r26, 0x03 ; Terça-Feira
-000035 d15f                      		RCALL	RTC_SETUP_ALARM2
+000035 d1b6                      		RCALL	RTC_SETUP_ALARM2
                                  		
-000036 d136                      		RCALL	DISPLAY_SETUP	
+000036 d18d                      		RCALL	DISPLAY_SETUP	
                                  ;--------------------------------------------------
                                  ;***** CONFIG. TIMER ************************
 000037 e70a                      	ldi r16, 0x7A											;31250 (HIGH)
@@ -1121,77 +1121,119 @@ C:\Users\lucas\Documents\Atmel Studio\7.0\programador_horario\programador_horari
                                  setup_Incrementos:
 000047 27cc                      	clr r28
 000048 27dd                      	clr r29
-000049 c000                      	rjmp loop
+000049 2700                      	clr r16
+00004a c000                      	rjmp loop
                                  
                                  ;**************** LOOP PRINCIPAL *****************		
-                                 loop:	
+                                 loop:
                                  	loop_exec_run:
-00004a d0a6                      		rcall led_run
+00004b d097                      		rcall led_run
+                                 	loop_cp_check_buttons:
+00004c 30c0                      		cpi r28, 0
+00004d f411                      		brne loop_button_R
+00004e 30d0                      		cpi r29, 0
+00004f f429                      		brne loop_button_A
                                  	loop_exec_check_buttons:
-00004b 9930                      		sbic PINC, PC0	; R
-00004c d010                      		rcall incrementeA
-00004d 9931                      		sbic PINC, PC1	; A
-00004e 940e 0067                 		call incrementeB
+                                 		loop_button_R:
+000050 9930                      			sbic PINC, PC0	; R
+000051 d030                      			rcall incrementeA
+000052 2700                      			clr r16	
+000053 13c0                      			cpse r28, r16
+000054 c004                      			rjmp cp_timer_H
+                                 		loop_button_A:
+000055 9931                      			sbic PINC, PC1	; A
+000056 940e 0088                 			call incrementeB
+000058 c000                      			rjmp cp_timer_H
                                  	cp_timer_H:
-000050 30d1                      		cpi r29, 1
-000051 f009                      		breq exec_timer_H
-000052 c001                      		rjmp cp_timer_M
+000059 30c1                      		cpi r28, 1
+00005a f009                      		breq exec_timer_H
+00005b c001                      		rjmp cp_timer_M
                                  	exec_timer_H:
-000053 c01e                      		rjmp timer_H
+00005c d034                      		rcall timer_H
                                  	cp_timer_M:
-000054 30d2                      		cpi r29, 2
-000055 f009                      		breq exec_timer_M
-000056 c001                      		rjmp cp_Week
+00005d 30c2                      		cpi r28, 2
+00005e f009                      		breq exec_timer_M
+00005f c001                      		rjmp cp_Week
                                  	exec_timer_M:
-000057 d022                      		rcall timer_M
+000060 d038                      		rcall timer_M
                                  	cp_Week:
-000058 30d3                      		cpi r29, 3
-000059 f009                      		breq exec_Week
-00005a c001                      		rjmp end_loop
+000061 30c3                      		cpi r28, 3
+000062 f009                      		breq exec_Week
+000063 c001                      		rjmp cp_On_H
                                  	exec_Week:
-00005b d026                      		rcall Week		
+000064 d03c                      		rcall Week
+                                 	cp_On_H:
+000065 30d1                      		cpi r29, 1
+000066 f009                      		breq exec_On_H
+000067 c001                      		rjmp cp_On_M
+                                 	exec_On_H:
+000068 d040                      		rcall On_H
+                                 	cp_On_M:
+000069 30d2                      		cpi r29, 2
+00006a f009                      		breq exec_On_M
+00006b c001                      		rjmp cp_Week_On
+                                 	exec_On_M:
+00006c d044                      		rcall On_M
+                                 	cp_Week_On:
+00006d 30d3                      		cpi r29, 3
+00006e f009                      		breq exec_Week_On
+00006f c001                      		rjmp cp_Off_H
+                                 	exec_Week_On:
+000070 d048                      		rcall Week_On
+                                 	cp_Off_H:
+000071 30d4                      		cpi r29, 4
+000072 f009                      		breq exec_Off_H
+000073 c001                      		rjmp cp_Off_M
+                                 	exec_Off_H:
+000074 d04c                      		rcall Off_H
+                                 	cp_Off_M:
+000075 30d5                      		cpi r29, 5
+000076 f009                      		breq exec_Off_M
+000077 c001                      		rjmp cp_Week_Off
+                                 	exec_Off_M:
+000078 d050                      		rcall Off_M
+                                 	cp_Week_Off:
+000079 30d6                      		cpi r29, 6
+00007a f009                      		breq exec_Week_Off
+00007b c001                      		rjmp cp_testaIntervalo
+                                 	exec_Week_Off:
+00007c d054                      		rcall Week_Off
+                                 	cp_testaIntervalo:
+00007d 30d7                      		cpi r29, 7
+00007e f009                      		breq exec_testaIntervalo
+00007f c001                      		rjmp end_loop
+                                 	exec_testaIntervalo:
+000080 d058                      		rcall testaIntervalo
                                  	end_loop:
-00005c cfed                      		rjmp loop
+000081 cfc9                      		rjmp loop
                                  ;-------------------------------------------------	
                                  ;*************** incrementeA *********************
                                  incrementeA:
-00005d 9930                      	sbic PINC, PC0
-00005e cffe                      	rjmp incrementeA
-00005f 95c3                      	inc r28
-000060 940e 014c                 	call delay
-000062 9508                      	ret
-                                 ;-------------------------------------------------
-                                 ;****************** zereA ************************
-                                 zereA:
-000063 27cc                      	clr r28
-000064 940e 014c                 	call delay
-000066 9508                      	ret
+000082 9930                      	sbic PINC, PC0
+000083 cffe                      	rjmp incrementeA
+000084 95c3                      	inc r28
+000085 940e 01a3                 	call delay
+000087 9508                      	ret
                                  ;-------------------------------------------------
                                  ;*************** incrementeB *********************
                                  incrementeB:
-000067 9931                      	sbic PINC, PC1
-000068 cffe                      	rjmp incrementeB
-000069 95d3                      	inc r29
-                                 	;call delay
-00006a 9508                      	ret
-                                 ;-------------------------------------------------
-                                 ;****************** zereB ************************
-                                 zereB:
-00006b 27dd                      	clr r29
-00006c 940e 014c                 	call delay
-00006e 9508                      	ret
+000088 9931                      	sbic PINC, PC1
+000089 cffe                      	rjmp incrementeB
+00008a 95d3                      	inc r29
+00008b 940e 01a3                 	call delay
+00008d 9508                      	ret
                                  ;-------------------------------------------------
                                  ;**************** zera_LEDs **********************
                                  zera_Leds:
-00006f 2700                      	clr r16
-000070 b90b                      	out PORTD, r16
-000071 9508                      	ret
+00008e 2700                      	clr r16
+00008f b90b                      	out PORTD, r16
+000090 9508                      	ret
                                  ;-------------------------------------------------
                                  ;***************** Timer_H ***********************
                                  timer_H:
-000072 9930                      	sbic PINC, PC0
-000073 cffe                      	rjmp timer_H
-000074 dffa                      	rcall zera_Leds
+000091 9930                      	sbic PINC, PC0
+000092 cffe                      	rjmp timer_H
+000093 dffa                      	rcall zera_Leds
                                  	;rcall rtc_get_H	
                                  loop_timer_H:
                                  	;sbic PINC, PC2
@@ -1200,17 +1242,17 @@ C:\Users\lucas\Documents\Atmel Studio\7.0\programador_horario\programador_horari
                                  	;rcall seta_baixo_H
                                   	;rcall rtc_set_H
                                  	;rcall print_hora
-000075 9b30                      	sbis PINC, PC0
-000076 cffe                      	rjmp loop_timer_H
-000077 d0d4                      	rcall delay
-000078 dfe4                      	rcall incrementeA
-000079 cfda                      	rjmp cp_timer_M
+000094 9b30                      	sbis PINC, PC0
+000095 cffe                      	rjmp loop_timer_H
+000096 d10c                      	rcall delay
+000097 dfea                      	rcall incrementeA
+000098 9508                      	ret
                                  ;-------------------------------------------------
                                  ;***************** Timer_M ***********************
                                  timer_M:
-00007a 9930                      	sbic PINC, PC0
-00007b cffe                      	rjmp timer_M
-00007c dff2                      	rcall zera_Leds
+000099 9930                      	sbic PINC, PC0
+00009a cffe                      	rjmp timer_M
+00009b dff2                      	rcall zera_Leds
                                  	;rcall rtc_get_M
                                  	;rcall print_minuto
                                  loop_timer_M:
@@ -1220,17 +1262,17 @@ C:\Users\lucas\Documents\Atmel Studio\7.0\programador_horario\programador_horari
                                  	;rcall seta_baixo_M
                                  	;rcall rtc_set_M
                                  	;rcall print_minuto
-00007d 9b30                      	sbis PINC, PC0
-00007e cffe                      	rjmp loop_timer_M
-00007f d0cc                      	rcall delay
-000080 dfdc                      	rcall incrementeA
-000081 9508                      	ret
+00009c 9b30                      	sbis PINC, PC0
+00009d cffe                      	rjmp loop_timer_M
+00009e d104                      	rcall delay
+00009f dfe2                      	rcall incrementeA
+0000a0 9508                      	ret
                                  ;-------------------------------------------------
                                  ;***************** Week **************************
                                  Week:
-000082 9930                      	sbic PINC, PC0
-000083 cffe                      	rjmp Week
-000084 dfea                      	rcall zera_Leds
+0000a1 9930                      	sbic PINC, PC0
+0000a2 cffe                      	rjmp Week
+0000a3 dfea                      	rcall zera_Leds
                                  	;ldi r26, 0x01
                                  	;out PORTB, r26
                                  loop_Week:
@@ -1240,797 +1282,931 @@ C:\Users\lucas\Documents\Atmel Studio\7.0\programador_horario\programador_horari
                                  	;rcall seta_baixo_D
                                  	;rcall rtc_set_D
                                  	;out PORTB, r26
-000085 9b30                      	sbis PINC, PC0
-000086 cffe                      	rjmp loop_Week
-000087 d0c4                      	rcall delay
-000088 dfd4                      	rcall incrementeA
-000089 9508                      	ret
+0000a4 9b30                      	sbis PINC, PC0
+0000a5 cffe                      	rjmp loop_Week
+0000a6 d0fc                      	rcall delay
+0000a7 dfda                      	rcall incrementeA
+0000a8 9508                      	ret
+                                 ;-------------------------------------------------
+                                 ;******************** ON_H ***********************
+                                 On_H:
+0000a9 9931                      	sbic PINC, PC1
+0000aa cffe                      	rjmp On_H
+0000ab dfe2                      	rcall zera_Leds
+                                 	;rcall rtc_get_H	
+                                 loop_On_H:
+                                 	;sbic PINC, PC2
+                                 	;rcall seta_cima_H
+                                 	;sbic PINC, PC3
+                                 	;rcall seta_baixo_H
+                                  	;rcall rtc_set_H
+                                 	;rcall print_hora
+0000ac 9b31                      	sbis PINC, PC1
+0000ad cffe                      	rjmp loop_On_H
+0000ae d0f4                      	rcall delay
+0000af dfd8                      	rcall incrementeB
+0000b0 9508                      	ret
+                                 ;-------------------------------------------------
+                                 ;******************** ON_M ***********************
+                                 On_M:
+0000b1 9931                      	sbic PINC, PC1
+0000b2 cffe                      	rjmp On_M
+0000b3 dfda                      	rcall zera_Leds
+                                 	;rcall rtc_get_H	
+                                 loop_On_M:
+                                 	;sbic PINC, PC2
+                                 	;rcall seta_cima_H
+                                 	;sbic PINC, PC3
+                                 	;rcall seta_baixo_H
+                                  	;rcall rtc_set_H
+                                 	;rcall print_hora
+0000b4 9b31                      	sbis PINC, PC1
+0000b5 cffe                      	rjmp loop_On_M
+0000b6 d0ec                      	rcall delay
+0000b7 dfd0                      	rcall incrementeB
+0000b8 9508                      	ret
+                                 ;-------------------------------------------------
+                                 ;****************** Week_On **********************
+                                 Week_On:
+0000b9 9931                      	sbic PINC, PC1
+0000ba cffe                      	rjmp Week_On
+0000bb dfd2                      	rcall zera_Leds
+                                 	;rcall rtc_get_H	
+                                 loop_Week_On:
+                                 	;sbic PINC, PC2
+                                 	;rcall seta_cima_H
+                                 	;sbic PINC, PC3
+                                 	;rcall seta_baixo_H
+                                  	;rcall rtc_set_H
+                                 	;rcall print_hora
+0000bc 9b31                      	sbis PINC, PC1
+0000bd cffe                      	rjmp loop_Week_On
+0000be d0e4                      	rcall delay
+0000bf dfc8                      	rcall incrementeB
+0000c0 9508                      	ret
+                                 ;-------------------------------------------------
+                                 ;******************* Off_H ***********************
+                                 Off_H:
+0000c1 9931                      	sbic PINC, PC1
+0000c2 cffe                      	rjmp Off_H
+0000c3 dfca                      	rcall zera_Leds
+                                 	;rcall rtc_get_H	
+                                 loop_Off_H:
+                                 	;sbic PINC, PC2
+                                 	;rcall seta_cima_H
+                                 	;sbic PINC, PC3
+                                 	;rcall seta_baixo_H
+                                  	;rcall rtc_set_H
+                                 	;rcall print_hora
+0000c4 9b31                      	sbis PINC, PC1
+0000c5 cffe                      	rjmp loop_Off_H
+0000c6 d0dc                      	rcall delay
+0000c7 dfc0                      	rcall incrementeB
+0000c8 9508                      	ret
+                                 ;-------------------------------------------------
+                                 ;******************* Off_M ***********************
+                                 Off_M:
+0000c9 9931                      	sbic PINC, PC1
+0000ca cffe                      	rjmp Off_M
+0000cb dfc2                      	rcall zera_Leds
+                                 	;rcall rtc_get_H	
+                                 loop_Off_M:
+                                 	;sbic PINC, PC2
+                                 	;rcall seta_cima_H
+                                 	;sbic PINC, PC3
+                                 	;rcall seta_baixo_H
+                                  	;rcall rtc_set_H
+                                 	;rcall print_hora
+0000cc 9b31                      	sbis PINC, PC1
+0000cd cffe                      	rjmp loop_Off_M
+0000ce d0d4                      	rcall delay
+0000cf dfb8                      	rcall incrementeB
+0000d0 9508                      	ret
+                                 ;-------------------------------------------------
+                                 ;****************** Week_Off *********************
+                                 Week_Off:
+0000d1 9931                      	sbic PINC, PC1
+0000d2 cffe                      	rjmp Week_Off
+0000d3 dfba                      	rcall zera_Leds
+                                 	;rcall rtc_get_H	
+                                 loop_Week_Off:
+                                 	;sbic PINC, PC2
+                                 	;rcall seta_cima_H
+                                 	;sbic PINC, PC3
+                                 	;rcall seta_baixo_H
+                                  	;rcall rtc_set_H
+                                 	;rcall print_hora
+0000d4 9b31                      	sbis PINC, PC1
+0000d5 cffe                      	rjmp loop_Week_Off
+0000d6 d0cc                      	rcall delay
+0000d7 dfb0                      	rcall incrementeB
+0000d8 9508                      	ret
+                                 ;-------------------------------------------------
+                                 ;*************** testaIntervalo ******************
+                                 testaIntervalo:
+0000d9 9931                      	sbic PINC, PC1
+0000da cffe                      	rjmp testaIntervalo
+                                 loop_testaIntervalo:
+0000db 9b31                      	sbis PINC, PC1
+0000dc cffe                      	rjmp loop_testaIntervalo
+0000dd d0c5                      	rcall delay
+0000de 9508                      	ret
                                  ;-------------------------------------------------
                                  ;***************** clearR ************************
                                  clearR:
-00008a d073                      	rcall led_clearR
-00008b 9508                      	ret
+0000df d029                      	rcall led_clearR
+0000e0 9508                      	ret
                                  ;-------------------------------------------------
-                                 ;**************** seta_cima_H ********************
-                                 seta_cima_H:
-00008c 3293                      	cpi r25, 0x23
-00008d f011                      	breq hora_min
-00008e d02f                      	rcall soma_Hexa_H
-00008f c001                      	rjmp seta_cima_hora_end
-                                 hora_min:
-000090 e090                      	ldi r25, 0x00	
-                                 seta_cima_hora_end:
-000091 d0ba                      	rcall delay
-000092 d0b9                      	rcall delay
-000093 9508                      	ret
+                                 ;***************** clearA ************************
+                                 clearA:
+0000e1 d02a                      	rcall led_clearA
+0000e2 9508                      	ret
                                  ;-------------------------------------------------
-                                 ;*************** seta_cima_M ********************
-                                 seta_cima_M:
-000094 3589                      	cpi r24, 0x59
-000095 f011                      	breq minuto_min
-000096 d033                      	rcall soma_Hexa_M
-000097 c001                      	rjmp seta_cima_minuto_end
-                                 minuto_min:
-000098 e090                      	ldi r25, 0x00	
-                                 seta_cima_minuto_end:
-000099 d0b2                      	rcall delay
-00009a d0b1                      	rcall delay
-00009b 9508                      	ret
-                                 ;-------------------------------------------------
-                                 ;*************** seta_cima_D ********************
-                                 seta_cima_D:
-00009c 30a7                      	cpi r26, 0x07
-00009d f011                      	breq dia_min
-00009e 95a3                      	inc r26
-00009f c001                      	rjmp seta_cima_dia_end
-                                 dia_min:
-0000a0 e091                      	ldi r25, 0x01	
-                                 seta_cima_dia_end:
-0000a1 d0aa                      	rcall delay
-0000a2 d0a9                      	rcall delay
-0000a3 9508                      	ret
-                                 ;-------------------------------------------------
-                                 ;*************** seta_baixo_H ********************
-                                 seta_baixo_H:
-0000a4 9933                      	sbic PINC, PC3
-0000a5 cffe                      	rjmp seta_baixo_H
-0000a6 3090                      	cpi r25, 0x00
-0000a7 f011                      	breq hora_max
-0000a8 d02e                      	rcall subtrai_Hexa_H
-0000a9 c001                      	rjmp seta_baixo_hora_end
-                                 hora_max:
-0000aa e293                      	ldi r25, 0x23	
-                                 seta_baixo_hora_end:
-                                 	;rcall delay
-0000ab 9508                      	ret
-                                 ;-------------------------------------------------
-                                 ;*************** seta_baixo_M ********************
-                                 seta_baixo_M:
-0000ac 9933                      	sbic PINC, PC3
-0000ad cffe                      	rjmp seta_baixo_M
-0000ae 3080                      	cpi r24, 0x00
-0000af f011                      	breq minuto_max
-0000b0 d033                      	rcall subtrai_Hexa_M
-0000b1 c001                      	rjmp seta_baixo_minuto_end
-                                 minuto_max:
-0000b2 e599                      	ldi r25, 0x59	
-                                 seta_baixo_minuto_end:
-0000b3 d098                      	rcall delay
-0000b4 9508                      	ret
-                                 ;-------------------------------------------------
-                                 ;*************** seta_baixo_D ********************
-                                 seta_baixo_D:
-0000b5 9933                      	sbic PINC, PC3
-0000b6 cffe                      	rjmp seta_baixo_D
-0000b7 30a1                      	cpi r26, 0x01
-0000b8 f011                      	breq dia_max
-0000b9 95aa                      	dec r26
-0000ba c001                      	rjmp seta_baixo_dia_end
-                                 dia_max:
-0000bb e097                      	ldi r25, 0x07	
-                                 seta_baixo_dia_end:
-0000bc d08f                      	rcall delay
-0000bd 9508                      	ret
-                                 ;-------------------------------------------------
-                                 ;*************** soma_hexa_H *********************
-                                 soma_hexa_H:
-0000be 2f29                      	mov r18, r25
-0000bf 9526                      	lsr	r18
-0000c0 9526                      	lsr	r18
-0000c1 9526                      	lsr	r18
-0000c2 9526                      	lsr	r18
-0000c3 3920                      	cpi r18, 0x90 
-0000c4 f011                      	breq MSH_H
-0000c5 9593                      	inc r25
-0000c6 c002                      	rjmp soma_hexa_hora_end
-                                 MSH_H:
-0000c7 e007                      	ldi r16, 0x07
-0000c8 0f90                      	add r25, r16
-                                 	
-                                 soma_hexa_hora_end:
-0000c9 9508                      	ret
-                                 ;-------------------------------------------------
-                                 ;*************** soma_hexa_M *********************
-                                 soma_hexa_M:
-0000ca 2f28                      	mov r18, r24
-0000cb 9526                      	lsr	r18
-0000cc 9526                      	lsr	r18
-0000cd 9526                      	lsr	r18
-0000ce 9526                      	lsr	r18
-0000cf 3920                      	cpi r18, 0x90
-0000d0 f011                      	breq MSH_M
-0000d1 9583                      	inc r24
-0000d2 c003                      	rjmp soma_hexa_minuto_end
-                                 MSH_M:
-0000d3 e100                      	ldi r16, 0x10
-0000d4 0f80                      	add r24, r16
-0000d5 5089                      	subi r24, 0x09
-                                 soma_hexa_minuto_end:
-0000d6 9508                      	ret
-                                 ;-------------------------------------------------
-                                 ;*************** subtrai_hexa_H ******************
-                                 subtrai_hexa_H:
-0000d7 2f29                      	mov r18, r25
-0000d8 9526                      	lsr	r18
-0000d9 9526                      	lsr	r18
-0000da 9526                      	lsr	r18
-0000db 9526                      	lsr	r18
-0000dc 3020                      	cpi r18, 0x00
-0000dd f011                      	breq LSH_H
-0000de 959a                      	dec r25
-0000df c003                      	rjmp subtrai_hexa_hora_end
-                                 LSH_H:
-0000e0 5190                      	subi r25, 0x10
-0000e1 e009                      	ldi  r16, 0x09
-0000e2 0f90                      	add  r25, r16
-                                 subtrai_hexa_hora_end:
-0000e3 9508                      	ret
-                                 ;-------------------------------------------------
-                                 ;*************** subtrai_hexa_M ******************
-                                 subtrai_hexa_M:
-0000e4 2f28                      	mov r18, r24
-0000e5 9526                      	lsr	r18
-0000e6 9526                      	lsr	r18
-0000e7 9526                      	lsr	r18
-0000e8 9526                      	lsr	r18
-0000e9 3020                      	cpi r18, 0x00
-0000ea f011                      	breq LSH_M
-0000eb 958a                      	dec r24
-0000ec c003                      	rjmp subtrai_hexa_minuto_end
-                                 LSH_M:
-0000ed 5180                      	subi r24, 0x10
-0000ee e009                      	ldi	r16, 0x09
-0000ef 0f80                      	add r24, r16
-                                 subtrai_hexa_minuto_end:
-0000f0 9508                      	ret
-                                 ;-------------------------------------------------
+                                 ; LEDS ------------LEDS ------------LEDS----------
                                  ;***************** led_run ***********************
                                  led_run:
-0000f1 b9a5                      	out PORTB, r26 ; RECEBE O CONTEÚDO DE r19 
-0000f2 9508                      ret
+0000e3 b9a5                      	out PORTB, r26 ;
+0000e4 9508                      ret
                                  ;-------------------------------------------------
                                  ;**************** led_timerH *********************
                                  led_timerH:
-0000f3 9a5c                      	sbi PORTD, PD4 ; LIGA O LED T
-0000f4 9508                      	ret	
+0000e5 9a5c                      	sbi PORTD, PD4 ; LIGA O LED T
+0000e6 9508                      	ret	
                                  ;-------------------------------------------------
                                  ;**************** led_timerM *********************
                                  led_timerM:
                                  	; TOGGLE LED T
-0000f5 b11b                      	in r17, PORTD
-0000f6 2716                      	eor r17, r22
-0000f7 b91b                      	out PORTD, r17 		
-0000f8 9508                      	ret
+0000e7 b11b                      	in r17, PORTD
+0000e8 2716                      	eor r17, r22
+0000e9 b91b                      	out PORTD, r17		
+0000ea 9508                      	ret
                                  ;-------------------------------------------------
                                  ;*************** led_Week ************************
                                  led_Week:
-0000f9 9a5c                      	sbi PORTD, PD4 ; LIGA O LED T
+0000eb 9a5c                      	sbi PORTD, PD4 ; LIGA O LED T
                                  	; TOGGLE LED W
-0000fa b11b                      	in r17, PORTD
-0000fb 2717                      	eor r17, r23
-0000fc b91b                      	out PORTD, r17 
-0000fd 9508                      	ret
-                                 ;-------------------------------------------------
-                                 ;*************** led_clearR ************************
-                                 led_clearR:
-0000fe 27cc                      	clr r28
-0000ff b9cb                      	out PORTD, r28
-000100 9508                      	ret
+0000ec b11b                      	in r17, PORTD
+0000ed 2717                      	eor r17, r23
+0000ee b91b                      	out PORTD, r17 
+0000ef 9508                      	ret
                                  ;-------------------------------------------------
                                  ;***************** led_OnH ***********************
                                  led_OnH:
-000101 9931                      	sbic PINC, PC1
-000102 cffe                      	rjmp led_OnH
-000103 9a5e                      	sbi PORTD, PD6 ; LIGA O LED O
-000104 9508                      	ret
+0000f0 9a5e                      	sbi PORTD, PD6 ; LIGA O LED O
+0000f1 9508                      	ret
                                  ;-------------------------------------------------
                                  ;***************** led_OnM ***********************
-                                 led_OnM:
-000105 9931                      	sbic PINC, PC1
-000106 cffe                      	rjmp led_OnM		
+                                 led_OnM:		
                                  	; TOGGLE LED O
-000107 b11b                      	in r17, PORTD
-000108 271e                      	eor r17, r30
-000109 b91b                      	out PORTD, r17 
-00010a 9508                      	ret
+0000f2 b11b                      	in r17, PORTD
+0000f3 271e                      	eor r17, r30
+0000f4 b91b                      	out PORTD, r17 
+0000f5 9508                      	ret
                                  ;-------------------------------------------------
                                  ;**************** led_WeekOn *********************
                                  led_WeekOn:
-00010b 9a5e                      	sbi PORTD, PD6 ; LIGA O LED O
+0000f6 9a5e                      	sbi PORTD, PD6 ; LIGA O LED O
                                  	; TOGGLE LED W
-00010c b11b                      	in r17, PORTD
-00010d 2717                      	eor r17, r23
-00010e b91b                      	out PORTD, r17 
-00010f 9508                      	ret
+0000f7 b11b                      	in r17, PORTD
+0000f8 2717                      	eor r17, r23
+0000f9 b91b                      	out PORTD, r17 
+0000fa 9508                      	ret
                                  ;-------------------------------------------------
                                  ;***************** led_OffH **********************
                                  led_OffH:
-000110 9a5f                      	sbi PORTD, PD7 ; LIGA O LED F
-000111 9508                      	ret
+0000fb 9a5f                      	sbi PORTD, PD7 ; LIGA O LED F
+0000fc 9508                      	ret
                                  ;-------------------------------------------------
                                  ;***************** led_OffM **********************				
                                  led_OffM:
                                  	; TOGGLE LED F
-000112 b11b                      	in r17, PORTD
-000113 271f                      	eor r17, r31
-000114 b91b                      	out PORTD, r17 
-000115 9508                      	ret
+0000fd b11b                      	in r17, PORTD
+0000fe 271f                      	eor r17, r31
+0000ff b91b                      	out PORTD, r17 
+000100 9508                      	ret
                                  ;-------------------------------------------------
                                  ;*************** led_WeekOff *********************
                                  led_WeekOff:
-000116 9a5f                      	sbi PORTD, PD7 ; LIGA O LED F
+000101 9a5f                      	sbi PORTD, PD7 ; LIGA O LED F
                                  	; TOGGLE LED W
-000117 b11b                      	in r17, PORTD
-000118 2717                      	eor r17, r23
-000119 b91b                      	out PORTD, r17
-00011a 9508                      	ret
+000102 b11b                      	in r17, PORTD
+000103 2717                      	eor r17, r23
+000104 b91b                      	out PORTD, r17
+000105 9508                      	ret
                                  ;-------------------------------------------------
-                                 ;************** testaIntervalo *******************
-                                 testaIntervalo:
-00011b 27dd                      	clr r29
-00011c b9db                      	out PORTD, r29
-00011d 9508                      	ret
+                                 ;************* led_testaIntervalo ****************
+                                 led_testaIntervalo:
+000106 27dd                      	clr r29
+000107 b9db                      	out PORTD, r29
+000108 9508                      	ret
                                  ;-------------------------------------------------
+                                 ;*************** led_clearR **********************
+                                 led_clearR:
+000109 27cc                      	clr r28
+00010a b9cb                      	out PORTD, r28
+00010b 9508                      	ret
+                                 ;-------------------------------------------------
+                                 ;*************** led_clearA **********************
+                                 led_clearA:
+00010c 27dd                      	clr r29
+00010d b9db                      	out PORTD, r29
+00010e 9508                      	ret
+                                 ;-------------------------------------------------
+                                 ;**************** seta_cima_H ********************
+                                 seta_cima_H:
+00010f 3293                      	cpi r25, 0x23
+000110 f011                      	breq hora_min
+000111 d02f                      	rcall soma_Hexa_H
+000112 c001                      	rjmp seta_cima_hora_end
+                                 hora_min:
+000113 e090                      	ldi r25, 0x00	
+                                 seta_cima_hora_end:
+000114 d08e                      	rcall delay
+000115 d08d                      	rcall delay
+000116 9508                      	ret
+                                 ;-------------------------------------------------
+                                 ;*************** seta_cima_M ********************
+                                 seta_cima_M:
+000117 3589                      	cpi r24, 0x59
+000118 f011                      	breq minuto_min
+000119 d033                      	rcall soma_Hexa_M
+00011a c001                      	rjmp seta_cima_minuto_end
+                                 minuto_min:
+00011b e090                      	ldi r25, 0x00	
+                                 seta_cima_minuto_end:
+00011c d086                      	rcall delay
+00011d d085                      	rcall delay
+00011e 9508                      	ret
+                                 ;-------------------------------------------------
+                                 ;*************** seta_cima_D ********************
+                                 seta_cima_D:
+00011f 30a7                      	cpi r26, 0x07
+000120 f011                      	breq dia_min
+000121 95a3                      	inc r26
+000122 c001                      	rjmp seta_cima_dia_end
+                                 dia_min:
+000123 e091                      	ldi r25, 0x01	
+                                 seta_cima_dia_end:
+000124 d07e                      	rcall delay
+000125 d07d                      	rcall delay
+000126 9508                      	ret
+                                 ;-------------------------------------------------
+                                 ;*************** seta_baixo_H ********************
+                                 seta_baixo_H:
+000127 9933                      	sbic PINC, PC3
+000128 cffe                      	rjmp seta_baixo_H
+000129 3090                      	cpi r25, 0x00
+00012a f011                      	breq hora_max
+00012b d02e                      	rcall subtrai_Hexa_H
+00012c c001                      	rjmp seta_baixo_hora_end
+                                 hora_max:
+00012d e293                      	ldi r25, 0x23	
+                                 seta_baixo_hora_end:
+                                 	;rcall delay
+00012e 9508                      	ret
+                                 ;-------------------------------------------------
+                                 ;*************** seta_baixo_M ********************
+                                 seta_baixo_M:
+00012f 9933                      	sbic PINC, PC3
+000130 cffe                      	rjmp seta_baixo_M
+000131 3080                      	cpi r24, 0x00
+000132 f011                      	breq minuto_max
+000133 d033                      	rcall subtrai_Hexa_M
+000134 c001                      	rjmp seta_baixo_minuto_end
+                                 minuto_max:
+000135 e599                      	ldi r25, 0x59	
+                                 seta_baixo_minuto_end:
+000136 d06c                      	rcall delay
+000137 9508                      	ret
+                                 ;-------------------------------------------------
+                                 ;*************** seta_baixo_D ********************
+                                 seta_baixo_D:
+000138 9933                      	sbic PINC, PC3
+000139 cffe                      	rjmp seta_baixo_D
+00013a 30a1                      	cpi r26, 0x01
+00013b f011                      	breq dia_max
+00013c 95aa                      	dec r26
+00013d c001                      	rjmp seta_baixo_dia_end
+                                 dia_max:
+00013e e097                      	ldi r25, 0x07	
+                                 seta_baixo_dia_end:
+00013f d063                      	rcall delay
+000140 9508                      	ret
+                                 ;-------------------------------------------------
+                                 ;*************** soma_hexa_H *********************
+                                 soma_hexa_H:
+000141 2f29                      	mov r18, r25
+000142 9526                      	lsr	r18
+000143 9526                      	lsr	r18
+000144 9526                      	lsr	r18
+000145 9526                      	lsr	r18
+000146 3920                      	cpi r18, 0x90 
+000147 f011                      	breq MSH_H
+000148 9593                      	inc r25
+000149 c002                      	rjmp soma_hexa_hora_end
+                                 MSH_H:
+00014a e007                      	ldi r16, 0x07
+00014b 0f90                      	add r25, r16
+                                 	
+                                 soma_hexa_hora_end:
+00014c 9508                      	ret
+                                 ;-------------------------------------------------
+                                 ;*************** soma_hexa_M *********************
+                                 soma_hexa_M:
+00014d 2f28                      	mov r18, r24
+00014e 9526                      	lsr	r18
+00014f 9526                      	lsr	r18
+000150 9526                      	lsr	r18
+000151 9526                      	lsr	r18
+000152 3920                      	cpi r18, 0x90
+000153 f011                      	breq MSH_M
+000154 9583                      	inc r24
+000155 c003                      	rjmp soma_hexa_minuto_end
+                                 MSH_M:
+000156 e100                      	ldi r16, 0x10
+000157 0f80                      	add r24, r16
+000158 5089                      	subi r24, 0x09
+                                 soma_hexa_minuto_end:
+000159 9508                      	ret
+                                 ;-------------------------------------------------
+                                 ;*************** subtrai_hexa_H ******************
+                                 subtrai_hexa_H:
+00015a 2f29                      	mov r18, r25
+00015b 9526                      	lsr	r18
+00015c 9526                      	lsr	r18
+00015d 9526                      	lsr	r18
+00015e 9526                      	lsr	r18
+00015f 3020                      	cpi r18, 0x00
+000160 f011                      	breq LSH_H
+000161 959a                      	dec r25
+000162 c003                      	rjmp subtrai_hexa_hora_end
+                                 LSH_H:
+000163 5190                      	subi r25, 0x10
+000164 e009                      	ldi  r16, 0x09
+000165 0f90                      	add  r25, r16
+                                 subtrai_hexa_hora_end:
+000166 9508                      	ret
+                                 ;-------------------------------------------------
+                                 ;*************** subtrai_hexa_M ******************
+                                 subtrai_hexa_M:
+000167 2f28                      	mov r18, r24
+000168 9526                      	lsr	r18
+000169 9526                      	lsr	r18
+00016a 9526                      	lsr	r18
+00016b 9526                      	lsr	r18
+00016c 3020                      	cpi r18, 0x00
+00016d f011                      	breq LSH_M
+00016e 958a                      	dec r24
+00016f c003                      	rjmp subtrai_hexa_minuto_end
+                                 LSH_M:
+000170 5180                      	subi r24, 0x10
+000171 e009                      	ldi	r16, 0x09
+000172 0f80                      	add r24, r16
+                                 subtrai_hexa_minuto_end:
+000173 9508                      	ret
+                                 ;-------------------------------------------------
+                                 
                                  ;************** VETOR INTERRUPÇÂO ****************
                                  TIMER1_COMPA:
                                  	t_cp_OnH:
-00011e 30c1                      		cpi r28, 1
-00011f f009                      		breq t_exec_OnH
-000120 c001                      		rjmp t_cp_OnM
+000174 30d1                      		cpi r29, 1
+000175 f009                      		breq t_exec_OnH
+000176 c001                      		rjmp t_cp_OnM
                                  	t_exec_OnH:
-000121 dfdf                      		rcall led_OnH
+000177 df78                      		rcall led_OnH
                                  	t_cp_OnM:
-000122 30c2                      		cpi r28, 2
-000123 f009                      		breq t_exec_OnM
-000124 c001                      		rjmp t_cp_WeekOn
+000178 30d2                      		cpi r29, 2
+000179 f009                      		breq t_exec_OnM
+00017a c001                      		rjmp t_cp_WeekOn
                                  	t_exec_OnM:
-000125 dfdf                      		rcall led_OnM
+00017b df76                      		rcall led_OnM
                                  	t_cp_WeekOn:
-000126 30c3                      		cpi r28, 3
-000127 f009                      		breq t_exec_WeekOn
-000128 c001                      		rjmp t_cp_OffH
+00017c 30d3                      		cpi r29, 3
+00017d f009                      		breq t_exec_WeekOn
+00017e c001                      		rjmp t_cp_OffH
                                  	t_exec_WeekOn:
-000129 dfe1                      		rcall led_WeekOn
+00017f df76                      		rcall led_WeekOn
                                  	t_cp_OffH:
-00012a 30c4                      		cpi r28, 4
-00012b f321                      		breq led_OffH
-00012c c001                      		rjmp t_cp_OffM
+000180 30d4                      		cpi r29, 4
+000181 f009                      		breq t_exec_OffH
+000182 c001                      		rjmp t_cp_OffM
                                  	t_exec_OffH:
-00012d dfe2                      		rcall led_OffH
+000183 df77                      		rcall led_OffH
                                  	t_cp_OffM:
-00012e 30c5                      		cpi r28, 5
-00012f f009                      		breq t_exec_OffM
-000130 c001                      		rjmp t_cp_WeekOff
+000184 30d5                      		cpi r29, 5
+000185 f009                      		breq t_exec_OffM
+000186 c001                      		rjmp t_cp_WeekOff
                                  	t_exec_OffM:
-000131 dfe0                      		rcall led_OffM
+000187 df75                      		rcall led_OffM
                                  	t_cp_WeekOff:
-000132 30c6                      		cpi r28, 6
-000133 f009                      		breq t_exec_WeekOff
-000134 c001                      		rjmp t_cp_testaIntervalo
+000188 30d6                      		cpi r29, 6
+000189 f009                      		breq t_exec_WeekOff
+00018a c001                      		rjmp t_cp_testaIntervalo
                                  	t_exec_WeekOff:
-000135 dfe0                      		rcall led_WeekOff
+00018b df75                      		rcall led_WeekOff
                                  	t_cp_testaIntervalo:
-000136 30c7                      		cpi r28, 7
-000137 f009                      		breq t_exec_testaIntervalo
-000138 c001                      		rjmp t_cp_timerH
+00018c 30d7                      		cpi r29, 7
+00018d f009                      		breq t_exec_testaIntervalo
+00018e c002                      		rjmp t_cp_timerH
                                  	t_exec_testaIntervalo:
-000139 dfe1                      		rcall testaIntervalo
+00018f df7c                      		rcall led_clearA
+000190 df75                      		rcall led_testaIntervalo
                                  	t_cp_timerH:	
-00013a 30d1                      		cpi r29, 1
-00013b f009                      		breq t_exec_timerH
-00013c c001                      		rjmp t_cp_timerM
+000191 30c1                      		cpi r28, 1
+000192 f009                      		breq t_exec_timerH
+000193 c001                      		rjmp t_cp_timerM
                                  	t_exec_timerH:
-00013d dfb5                      		rcall led_timerH
+000194 df50                      		rcall led_timerH
                                  	t_cp_timerM:
-00013e 30d2                      		cpi r29, 2
-00013f f009                      		breq t_exec_timerM
-000140 c001                      		rjmp t_cp_Week
+000195 30c2                      		cpi r28, 2
+000196 f009                      		breq t_exec_timerM
+000197 c001                      		rjmp t_cp_Week
                                  	t_exec_timerM:
-000141 dfb3                      		rcall led_timerM
+000198 df4e                      		rcall led_timerM
                                  	t_cp_Week:
-000142 30d3                      		cpi r29, 3
-000143 f009                      		breq t_exec_Week
-000144 c001                      		rjmp t_cp_clearR
+000199 30c3                      		cpi r28, 3
+00019a f009                      		breq t_exec_Week
+00019b c001                      		rjmp t_cp_clearR
                                  	t_exec_Week:
-000145 dfb3                      		rcall led_Week
+00019c df4e                      		rcall led_Week
                                  	t_cp_clearR:
-000146 30d4                      		cpi r29, 4
-000147 f009                      		breq t_exec_clearR
-000148 c001                      		rjmp t_fim
+00019d 30c4                      		cpi r28, 4
+00019e f009                      		breq t_exec_clearR
+00019f c001                      		rjmp t_fim
                                  	t_exec_clearR:
-000149 dfb4                      		rcall led_clearR
+0001a0 df68                      		rcall led_clearR
                                  	t_fim:	
-00014a 9518                      		reti
+0001a1 9518                      		reti
                                  ;-------------------------------------------------
                                  
                                  ;****** INTERRUPÇÃO EXTERNA NO PIN D2 ***************
                                  INT0_vect:
                                  	;call led_OnM
-00014b 9518                      reti
+0001a2 9518                      reti
                                  ;******* FIM DE INTERRUPÇÃO EXTERNA NO PIN D2 *************
                                  
                                  
                                  ;************* DELAY *****************************
                                  delay:	
-00014c e02a                      	ldi  r18, 10
-00014d ef3f                          ldi  r19, 255
-00014e ef4f                      	ldi  r20, 255
+0001a3 e02a                      	ldi  r18, 10
+0001a4 ef3f                          ldi  r19, 255
+0001a5 ef4f                      	ldi  r20, 255
                                  
-00014f 954a                      L1: dec  r20
-000150 f7f1                          brne L1
-000151 953a                      	dec  r19
-000152 f7e1                          brne L1
-000153 952a                          dec  r18
-000154 f7d1                          brne L1
+0001a6 954a                      L1: dec  r20
+0001a7 f7f1                          brne L1
+0001a8 953a                      	dec  r19
+0001a9 f7e1                          brne L1
+0001aa 952a                          dec  r18
+0001ab f7d1                          brne L1
                                  
-000155 9508                      	ret
+0001ac 9508                      	ret
                                  
                                  ; ************ FIM DELAY *********************
                                  ;************************************
                                  DISPLAY_ON:
-000156 e012                      	LDI		r17, (0<<PB2) | (1<<PB1)
-000157 b915                      	OUT		PORTB, r17
-000158 9508                      	RET
+0001ad e012                      	LDI		r17, (0<<PB2) | (1<<PB1)
+0001ae b915                      	OUT		PORTB, r17
+0001af 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  DISPLAY_OFF:
-000159 e016                      	LDI		r17, (1<<PB2) | (1<<PB1)
-00015a b915                      	OUT		PORTB, r17
-00015b 9508                      	RET
+0001b0 e016                      	LDI		r17, (1<<PB2) | (1<<PB1)
+0001b1 b915                      	OUT		PORTB, r17
+0001b2 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  RTC_ON:
-00015c e014                      	LDI		r17, (1<<PB2) | (0<<PB1)
-00015d b915                      	OUT		PORTB, r17
-00015e 9508                      	RET
+0001b3 e014                      	LDI		r17, (1<<PB2) | (0<<PB1)
+0001b4 b915                      	OUT		PORTB, r17
+0001b5 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  RTC_OFF:
-00015f e016                      	LDI		r17, (1<<PB2) | (1<<PB1)
-000160 b915                      	OUT		PORTB, r17
-000161 9508                      	RET
+0001b6 e016                      	LDI		r17, (1<<PB2) | (1<<PB1)
+0001b7 b915                      	OUT		PORTB, r17
+0001b8 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  SPI_MODE_0:
-000162 e510                      	LDI		r17, (1<<SPE) | (1<<MSTR)
-000163 bd1c                      	OUT		SPCR, r17
-000164 9508                      	RET
+0001b9 e510                      	LDI		r17, (1<<SPE) | (1<<MSTR)
+0001ba bd1c                      	OUT		SPCR, r17
+0001bb 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  SPI_MODE_1:
-000165 e514                      	LDI		r17, (1<<SPE) | (1<<MSTR) | (1<<CPHA)
-000166 bd1c                      	OUT		SPCR, r17
-000167 9508                      	RET
+0001bc e514                      	LDI		r17, (1<<SPE) | (1<<MSTR) | (1<<CPHA)
+0001bd bd1c                      	OUT		SPCR, r17
+0001be 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  SPI_TRANSFER:
-000168 bd2e                      	OUT		SPDR, r18
+0001bf bd2e                      	OUT		SPDR, r18
                                  SPI_WAIT_TRANSFER:
-000169 b50d                      	IN		r16, SPSR
-00016a ff07                      	SBRS	r16, SPIF
-00016b cffd                      	RJMP	SPI_WAIT_TRANSFER
-00016c 9508                      	RET
+0001c0 b50d                      	IN		r16, SPSR
+0001c1 ff07                      	SBRS	r16, SPIF
+0001c2 cffd                      	RJMP	SPI_WAIT_TRANSFER
+0001c3 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  DISPLAY_SETUP:
-00016d dff4                      	RCALL	SPI_MODE_0
-00016e dfea                      	RCALL	DISPLAY_OFF
-00016f 0000                      	NOP
-000170 dfe5                      	RCALL	DISPLAY_ON
-000171 e02c                      	LDI		r18, 0x0C ;shutdown mode
-000172 dff5                      	RCALL	SPI_TRANSFER
-000173 e021                      	LDI		r18, 0x01
-000174 dff3                      	RCALL	SPI_TRANSFER
-000175 dfe3                      	RCALL	DISPLAY_OFF
-000176 0000                      	NOP
-000177 dfde                      	RCALL	DISPLAY_ON
-000178 e029                      	LDI		r18, 0x09 ;decode mode
-000179 dfee                      	RCALL	SPI_TRANSFER
-00017a ef2f                      	LDI		r18, 0xFF
-00017b dfec                      	RCALL	SPI_TRANSFER
-00017c dfdc                      	RCALL	DISPLAY_OFF
-00017d 0000                      	NOP
-00017e dfd7                      	RCALL	DISPLAY_ON
-00017f e02a                      	LDI		r18, 0x0A ;intensity
-000180 dfe7                      	RCALL	SPI_TRANSFER
-000181 e02f                      	LDI		r18, 0X0F 
-000182 dfe5                      	RCALL	SPI_TRANSFER
-000183 dfd5                      	RCALL	DISPLAY_OFF
-000184 0000                      	NOP
-000185 dfd0                      	RCALL	DISPLAY_ON
-000186 e02b                      	LDI		r18, 0x0B ;scan limit
-000187 dfe0                      	RCALL	SPI_TRANSFER
-000188 e023                      	LDI		r18, 0x03
-000189 dfde                      	RCALL	SPI_TRANSFER
-00018a dfce                      	RCALL	DISPLAY_OFF
-00018b 9508                      	RET
+0001c4 dff4                      	RCALL	SPI_MODE_0
+0001c5 dfea                      	RCALL	DISPLAY_OFF
+0001c6 0000                      	NOP
+0001c7 dfe5                      	RCALL	DISPLAY_ON
+0001c8 e02c                      	LDI		r18, 0x0C ;shutdown mode
+0001c9 dff5                      	RCALL	SPI_TRANSFER
+0001ca e021                      	LDI		r18, 0x01
+0001cb dff3                      	RCALL	SPI_TRANSFER
+0001cc dfe3                      	RCALL	DISPLAY_OFF
+0001cd 0000                      	NOP
+0001ce dfde                      	RCALL	DISPLAY_ON
+0001cf e029                      	LDI		r18, 0x09 ;decode mode
+0001d0 dfee                      	RCALL	SPI_TRANSFER
+0001d1 ef2f                      	LDI		r18, 0xFF
+0001d2 dfec                      	RCALL	SPI_TRANSFER
+0001d3 dfdc                      	RCALL	DISPLAY_OFF
+0001d4 0000                      	NOP
+0001d5 dfd7                      	RCALL	DISPLAY_ON
+0001d6 e02a                      	LDI		r18, 0x0A ;intensity
+0001d7 dfe7                      	RCALL	SPI_TRANSFER
+0001d8 e02f                      	LDI		r18, 0X0F 
+0001d9 dfe5                      	RCALL	SPI_TRANSFER
+0001da dfd5                      	RCALL	DISPLAY_OFF
+0001db 0000                      	NOP
+0001dc dfd0                      	RCALL	DISPLAY_ON
+0001dd e02b                      	LDI		r18, 0x0B ;scan limit
+0001de dfe0                      	RCALL	SPI_TRANSFER
+0001df e023                      	LDI		r18, 0x03
+0001e0 dfde                      	RCALL	SPI_TRANSFER
+0001e1 dfce                      	RCALL	DISPLAY_OFF
+0001e2 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  RTC_SETUP:
-00018c d020                      	RCALL	RTC_SET_M
-00018d d03d                      	RCALL	RTC_SET_H
-00018e d05a                      	RCALL	RTC_SET_D
-00018f d009                      	RCALL	RTC_SET_CONTROL_REGISTER
-000190 9508                      	RET
+0001e3 d020                      	RCALL	RTC_SET_M
+0001e4 d03d                      	RCALL	RTC_SET_H
+0001e5 d05a                      	RCALL	RTC_SET_D
+0001e6 d009                      	RCALL	RTC_SET_CONTROL_REGISTER
+0001e7 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  RTC_SETUP_ALARM1:
-000191 d025                      	RCALL	RTC_SET_M_A1
-000192 d042                      	RCALL	RTC_SET_H_A1
-000193 d05f                      	RCALL	RTC_SET_D_A1
-000194 9508                      	RET
+0001e8 d025                      	RCALL	RTC_SET_M_A1
+0001e9 d042                      	RCALL	RTC_SET_H_A1
+0001ea d05f                      	RCALL	RTC_SET_D_A1
+0001eb 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  RTC_SETUP_ALARM2:
-000195 d02b                      	RCALL	RTC_SET_M_A2
-000196 d048                      	RCALL	RTC_SET_H_A2
-000197 d066                      	RCALL	RTC_SET_D_A2
-000198 9508                      	RET
+0001ec d02b                      	RCALL	RTC_SET_M_A2
+0001ed d048                      	RCALL	RTC_SET_H_A2
+0001ee d066                      	RCALL	RTC_SET_D_A2
+0001ef 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  RTC_SET_CONTROL_REGISTER:
-000199 dfcb                      	RCALL	SPI_MODE_1
-00019a dfc4                      	RCALL	RTC_OFF
-00019b 0000                      	NOP
-00019c dfbf                      	RCALL	RTC_ON
-00019d e82e                      	LDI		r18, 0x8E ;CMD Set minutes
-00019e dfc9                      	RCALL	SPI_TRANSFER
-00019f e027                      	LDI		r18, 0x07 ;Set Flag alarm 1 e 2 e habilita interrupção.
-0001a0 dfc7                      	RCALL	SPI_TRANSFER
-0001a1 dfbd                      	RCALL	RTC_OFF
-0001a2 9508                      	RET
+0001f0 dfcb                      	RCALL	SPI_MODE_1
+0001f1 dfc4                      	RCALL	RTC_OFF
+0001f2 0000                      	NOP
+0001f3 dfbf                      	RCALL	RTC_ON
+0001f4 e82e                      	LDI		r18, 0x8E ;CMD Set minutes
+0001f5 dfc9                      	RCALL	SPI_TRANSFER
+0001f6 e027                      	LDI		r18, 0x07 ;Set Flag alarm 1 e 2 e habilita interrupção.
+0001f7 dfc7                      	RCALL	SPI_TRANSFER
+0001f8 dfbd                      	RCALL	RTC_OFF
+0001f9 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  RTC_RESET_ALARMS:
-0001a3 dfc1                      	RCALL	SPI_MODE_1
-0001a4 dfba                      	RCALL	RTC_OFF
-0001a5 0000                      	NOP
-0001a6 dfb5                      	RCALL	RTC_ON
-0001a7 e82f                      	LDI		r18, 0x8F ;CMD Set minutes
-0001a8 dfbf                      	RCALL	SPI_TRANSFER
-0001a9 ec28                      	LDI		r18, 0xC8 ;Set Flag alarm 1 e 2 e habilita interrupção.
-0001aa dfbd                      	RCALL	SPI_TRANSFER
-0001ab dfb3                      	RCALL	RTC_OFF
-0001ac 9508                      	RET
+0001fa dfc1                      	RCALL	SPI_MODE_1
+0001fb dfba                      	RCALL	RTC_OFF
+0001fc 0000                      	NOP
+0001fd dfb5                      	RCALL	RTC_ON
+0001fe e82f                      	LDI		r18, 0x8F ;CMD Set minutes
+0001ff dfbf                      	RCALL	SPI_TRANSFER
+000200 ec28                      	LDI		r18, 0xC8 ;Set Flag alarm 1 e 2 e habilita interrupção.
+000201 dfbd                      	RCALL	SPI_TRANSFER
+000202 dfb3                      	RCALL	RTC_OFF
+000203 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  RTC_SET_M:
-0001ad dfb7                      	RCALL	SPI_MODE_1
-0001ae dfb0                      	RCALL	RTC_OFF
-0001af 0000                      	NOP
-0001b0 dfab                      	RCALL	RTC_ON
-0001b1 e821                      	LDI		r18, 0x81 ;CMD Set minutes
-0001b2 dfb5                      	RCALL	SPI_TRANSFER
-0001b3 2f28                      	MOV		r18, r24 ;Set MINUTO.
-0001b4 dfb3                      	RCALL	SPI_TRANSFER
-0001b5 dfa9                      	RCALL	RTC_OFF
-0001b6 9508                      	RET
+000204 dfb7                      	RCALL	SPI_MODE_1
+000205 dfb0                      	RCALL	RTC_OFF
+000206 0000                      	NOP
+000207 dfab                      	RCALL	RTC_ON
+000208 e821                      	LDI		r18, 0x81 ;CMD Set minutes
+000209 dfb5                      	RCALL	SPI_TRANSFER
+00020a 2f28                      	MOV		r18, r24 ;Set MINUTO.
+00020b dfb3                      	RCALL	SPI_TRANSFER
+00020c dfa9                      	RCALL	RTC_OFF
+00020d 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  RTC_SET_M_A1: ;Set Minutos do alarme 1
-0001b7 dfad                      	RCALL	SPI_MODE_1
-0001b8 dfa6                      	RCALL	RTC_OFF
-0001b9 0000                      	NOP
-0001ba dfa1                      	RCALL	RTC_ON
-0001bb e828                      	LDI		r18, 0x88 ;CMD Set minutes alarme 1
-0001bc dfab                      	RCALL	SPI_TRANSFER
-0001bd 2f28                      	MOV		r18, r24 ;Set MINUTO.
-0001be dfa9                      	RCALL	SPI_TRANSFER
-0001bf df9f                      	RCALL	RTC_OFF
-0001c0 9508                      	RET
+00020e dfad                      	RCALL	SPI_MODE_1
+00020f dfa6                      	RCALL	RTC_OFF
+000210 0000                      	NOP
+000211 dfa1                      	RCALL	RTC_ON
+000212 e828                      	LDI		r18, 0x88 ;CMD Set minutes alarme 1
+000213 dfab                      	RCALL	SPI_TRANSFER
+000214 2f28                      	MOV		r18, r24 ;Set MINUTO.
+000215 dfa9                      	RCALL	SPI_TRANSFER
+000216 df9f                      	RCALL	RTC_OFF
+000217 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  RTC_SET_M_A2: ;Set Minutos do alarme 2
-0001c1 dfa3                      	RCALL	SPI_MODE_1
-0001c2 df9c                      	RCALL	RTC_OFF
-0001c3 0000                      	NOP
-0001c4 df97                      	RCALL	RTC_ON
-0001c5 e82b                      	LDI		r18, 0x8B ;CMD Set minutes alarme 2
-0001c6 dfa1                      	RCALL	SPI_TRANSFER
-0001c7 2f28                      	MOV		r18, r24 ;Set MINUTO.
-0001c8 df9f                      	RCALL	SPI_TRANSFER
-0001c9 df95                      	RCALL	RTC_OFF
-0001ca 9508                      	RET
+000218 dfa3                      	RCALL	SPI_MODE_1
+000219 df9c                      	RCALL	RTC_OFF
+00021a 0000                      	NOP
+00021b df97                      	RCALL	RTC_ON
+00021c e82b                      	LDI		r18, 0x8B ;CMD Set minutes alarme 2
+00021d dfa1                      	RCALL	SPI_TRANSFER
+00021e 2f28                      	MOV		r18, r24 ;Set MINUTO.
+00021f df9f                      	RCALL	SPI_TRANSFER
+000220 df95                      	RCALL	RTC_OFF
+000221 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  RTC_SET_H:
-0001cb df99                      	RCALL	SPI_MODE_1
-0001cc df92                      	RCALL	RTC_OFF
-0001cd 0000                      	NOP
-0001ce df8d                      	RCALL	RTC_ON
-0001cf e822                      	LDI		r18, 0x82 ;CMD Set hour
-0001d0 df97                      	RCALL	SPI_TRANSFER
-0001d1 2f29                      	MOV		r18, r25 ;Set HORA.
-0001d2 df95                      	RCALL	SPI_TRANSFER
-0001d3 df8b                      	RCALL	RTC_OFF
-0001d4 9508                      	RET
+000222 df99                      	RCALL	SPI_MODE_1
+000223 df92                      	RCALL	RTC_OFF
+000224 0000                      	NOP
+000225 df8d                      	RCALL	RTC_ON
+000226 e822                      	LDI		r18, 0x82 ;CMD Set hour
+000227 df97                      	RCALL	SPI_TRANSFER
+000228 2f29                      	MOV		r18, r25 ;Set HORA.
+000229 df95                      	RCALL	SPI_TRANSFER
+00022a df8b                      	RCALL	RTC_OFF
+00022b 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  RTC_SET_H_A1: ;Set Horas do alarme 1
-0001d5 df8f                      	RCALL	SPI_MODE_1
-0001d6 df88                      	RCALL	RTC_OFF
-0001d7 0000                      	NOP
-0001d8 df83                      	RCALL	RTC_ON
-0001d9 e829                      	LDI		r18, 0x89 ;CMD Set hour alarme 1
-0001da df8d                      	RCALL	SPI_TRANSFER
-0001db 2f29                      	MOV		r18, r25 ;Set HORA.
-0001dc df8b                      	RCALL	SPI_TRANSFER
-0001dd df81                      	RCALL	RTC_OFF
-0001de 9508                      	RET
+00022c df8f                      	RCALL	SPI_MODE_1
+00022d df88                      	RCALL	RTC_OFF
+00022e 0000                      	NOP
+00022f df83                      	RCALL	RTC_ON
+000230 e829                      	LDI		r18, 0x89 ;CMD Set hour alarme 1
+000231 df8d                      	RCALL	SPI_TRANSFER
+000232 2f29                      	MOV		r18, r25 ;Set HORA.
+000233 df8b                      	RCALL	SPI_TRANSFER
+000234 df81                      	RCALL	RTC_OFF
+000235 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  RTC_SET_H_A2: ;Set Horas do alarme 2
-0001df df85                      	RCALL	SPI_MODE_1
-0001e0 df7e                      	RCALL	RTC_OFF
-0001e1 0000                      	NOP
-0001e2 df79                      	RCALL	RTC_ON
-0001e3 e82c                      	LDI		r18, 0x8C ;CMD Set hour alarme 2
-0001e4 df83                      	RCALL	SPI_TRANSFER
-0001e5 2f29                      	MOV		r18, r25 ;Set HORA.
-0001e6 df81                      	RCALL	SPI_TRANSFER
-0001e7 df77                      	RCALL	RTC_OFF
-0001e8 9508                      	RET
+000236 df85                      	RCALL	SPI_MODE_1
+000237 df7e                      	RCALL	RTC_OFF
+000238 0000                      	NOP
+000239 df79                      	RCALL	RTC_ON
+00023a e82c                      	LDI		r18, 0x8C ;CMD Set hour alarme 2
+00023b df83                      	RCALL	SPI_TRANSFER
+00023c 2f29                      	MOV		r18, r25 ;Set HORA.
+00023d df81                      	RCALL	SPI_TRANSFER
+00023e df77                      	RCALL	RTC_OFF
+00023f 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  RTC_SET_D:
-0001e9 df7b                      	RCALL	SPI_MODE_1
-0001ea df74                      	RCALL	RTC_OFF
-0001eb 0000                      	NOP
-0001ec df6f                      	RCALL	RTC_ON
-0001ed e823                      	LDI		r18, 0x83 ;CMD Set Day week (1:Dom. | 2:Seg. | ... |7:Sab.)
-0001ee df79                      	RCALL	SPI_TRANSFER
-0001ef 2f2a                      	MOV		r18, r26 ;Set DIA.
-0001f0 df77                      	RCALL	SPI_TRANSFER
-0001f1 df6d                      	RCALL	RTC_OFF
-0001f2 9508                      	RET
+000240 df7b                      	RCALL	SPI_MODE_1
+000241 df74                      	RCALL	RTC_OFF
+000242 0000                      	NOP
+000243 df6f                      	RCALL	RTC_ON
+000244 e823                      	LDI		r18, 0x83 ;CMD Set Day week (1:Dom. | 2:Seg. | ... |7:Sab.)
+000245 df79                      	RCALL	SPI_TRANSFER
+000246 2f2a                      	MOV		r18, r26 ;Set DIA.
+000247 df77                      	RCALL	SPI_TRANSFER
+000248 df6d                      	RCALL	RTC_OFF
+000249 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  RTC_SET_D_A1: ;Set Dia da semana do alarme 1
-0001f3 df71                      	RCALL	SPI_MODE_1
-0001f4 df6a                      	RCALL	RTC_OFF
-0001f5 0000                      	NOP
-0001f6 df65                      	RCALL	RTC_ON
-0001f7 e82a                      	LDI		r18, 0x8A ;CMD Set Day week (1:Dom. | 2:Seg. | ... |7:Sab.)
-0001f8 df6f                      	RCALL	SPI_TRANSFER
-0001f9 2f2a                      	MOV		r18, r26 ;Set DIA. alarme 1
-0001fa 6420                      	ORI		r18, 0x40 ;Set DY/DT~ para Dia da semana
-0001fb df6c                      	RCALL	SPI_TRANSFER
-0001fc df62                      	RCALL	RTC_OFF
-0001fd 9508                      	RET
+00024a df71                      	RCALL	SPI_MODE_1
+00024b df6a                      	RCALL	RTC_OFF
+00024c 0000                      	NOP
+00024d df65                      	RCALL	RTC_ON
+00024e e82a                      	LDI		r18, 0x8A ;CMD Set Day week (1:Dom. | 2:Seg. | ... |7:Sab.)
+00024f df6f                      	RCALL	SPI_TRANSFER
+000250 2f2a                      	MOV		r18, r26 ;Set DIA. alarme 1
+000251 6420                      	ORI		r18, 0x40 ;Set DY/DT~ para Dia da semana
+000252 df6c                      	RCALL	SPI_TRANSFER
+000253 df62                      	RCALL	RTC_OFF
+000254 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  RTC_SET_D_A2: ;Set Dia da semana do alarme 2
-0001fe df66                      	RCALL	SPI_MODE_1
-0001ff df5f                      	RCALL	RTC_OFF
-000200 0000                      	NOP
-000201 df5a                      	RCALL	RTC_ON
-000202 e82d                      	LDI		r18, 0x8D ;CMD Set Day week (1:Dom. | 2:Seg. | ... |7:Sab.)
-000203 df64                      	RCALL	SPI_TRANSFER
-000204 2f2a                      	MOV		r18, r26 ;Set DIA. alarme 2
-000205 6420                      	ORI		r18, 0x40 ;Set DY/DT~ para Dia da semana
-000206 df61                      	RCALL	SPI_TRANSFER
-000207 df57                      	RCALL	RTC_OFF
-000208 9508                      	RET
+000255 df66                      	RCALL	SPI_MODE_1
+000256 df5f                      	RCALL	RTC_OFF
+000257 0000                      	NOP
+000258 df5a                      	RCALL	RTC_ON
+000259 e82d                      	LDI		r18, 0x8D ;CMD Set Day week (1:Dom. | 2:Seg. | ... |7:Sab.)
+00025a df64                      	RCALL	SPI_TRANSFER
+00025b 2f2a                      	MOV		r18, r26 ;Set DIA. alarme 2
+00025c 6420                      	ORI		r18, 0x40 ;Set DY/DT~ para Dia da semana
+00025d df61                      	RCALL	SPI_TRANSFER
+00025e df57                      	RCALL	RTC_OFF
+00025f 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  RTC_GET_M:
-000209 df5b                      	RCALL	SPI_MODE_1
-00020a df54                      	RCALL	RTC_OFF
-00020b 0000                      	NOP
-00020c df4f                      	RCALL	RTC_ON
-00020d e021                      	LDI		r18, 0x01 ;CMD Set minutes
-00020e df59                      	RCALL	SPI_TRANSFER
-00020f ef2f                      	LDI		r18, 0xFF ;DUMMY BYTE - RESPONSE MINUTO.
-000210 df57                      	RCALL	SPI_TRANSFER
-000211 b58e                      	IN		r24, SPDR ;GET MINUTO
-000212 df4c                      	RCALL	RTC_OFF
-000213 9508                      	RET
+000260 df5b                      	RCALL	SPI_MODE_1
+000261 df54                      	RCALL	RTC_OFF
+000262 0000                      	NOP
+000263 df4f                      	RCALL	RTC_ON
+000264 e021                      	LDI		r18, 0x01 ;CMD Set minutes
+000265 df59                      	RCALL	SPI_TRANSFER
+000266 ef2f                      	LDI		r18, 0xFF ;DUMMY BYTE - RESPONSE MINUTO.
+000267 df57                      	RCALL	SPI_TRANSFER
+000268 b58e                      	IN		r24, SPDR ;GET MINUTO
+000269 df4c                      	RCALL	RTC_OFF
+00026a 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  RTC_GET_H:
-000214 df50                      	RCALL	SPI_MODE_1
-000215 df49                      	RCALL	RTC_OFF
-000216 0000                      	NOP
-000217 df44                      	RCALL	RTC_ON
-000218 e022                      	LDI		r18, 0x02 ;CMD Set minutes
-000219 df4e                      	RCALL	SPI_TRANSFER
-00021a ef2f                      	LDI		r18, 0xFF ;DUMMY BYTE - RESPONSE MINUTO.
-00021b df4c                      	RCALL	SPI_TRANSFER
-00021c b59e                      	IN		r25, SPDR ;GET HORA
-00021d df41                      	RCALL	RTC_OFF
-00021e 9508                      	RET
+00026b df50                      	RCALL	SPI_MODE_1
+00026c df49                      	RCALL	RTC_OFF
+00026d 0000                      	NOP
+00026e df44                      	RCALL	RTC_ON
+00026f e022                      	LDI		r18, 0x02 ;CMD Set minutes
+000270 df4e                      	RCALL	SPI_TRANSFER
+000271 ef2f                      	LDI		r18, 0xFF ;DUMMY BYTE - RESPONSE MINUTO.
+000272 df4c                      	RCALL	SPI_TRANSFER
+000273 b59e                      	IN		r25, SPDR ;GET HORA
+000274 df41                      	RCALL	RTC_OFF
+000275 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  RTC_GET_D:
-00021f df45                      	RCALL	SPI_MODE_1
-000220 df3e                      	RCALL	RTC_OFF
-000221 0000                      	NOP
-000222 df39                      	RCALL	RTC_ON
-000223 e023                      	LDI		r18, 0x03 ;CMD Set minutes
-000224 df43                      	RCALL	SPI_TRANSFER
-000225 ef2f                      	LDI		r18, 0xFF ;DUMMY BYTE - RESPONSE MINUTO.
-000226 df41                      	RCALL	SPI_TRANSFER
-000227 b5ae                      	IN		r26, SPDR ;GET DIA
-000228 df36                      	RCALL	RTC_OFF
-000229 9508                      	RET
+000276 df45                      	RCALL	SPI_MODE_1
+000277 df3e                      	RCALL	RTC_OFF
+000278 0000                      	NOP
+000279 df39                      	RCALL	RTC_ON
+00027a e023                      	LDI		r18, 0x03 ;CMD Set minutes
+00027b df43                      	RCALL	SPI_TRANSFER
+00027c ef2f                      	LDI		r18, 0xFF ;DUMMY BYTE - RESPONSE MINUTO.
+00027d df41                      	RCALL	SPI_TRANSFER
+00027e b5ae                      	IN		r26, SPDR ;GET DIA
+00027f df36                      	RCALL	RTC_OFF
+000280 9508                      	RET
                                  ;------------------------------------
                                  
                                  ;************************************
                                  PRINT_DISPLAY:
-00022a e800                      	LDI r16, 0x80
+000281 e800                      	LDI r16, 0x80
                                  
-00022b dfdd                      	RCALL	RTC_GET_M ; r24 <= SPDR (Resposta do SPI)
-00022c dfe7                      	RCALL	RTC_GET_H ; r25 <= SPDR (Resposta do SPI)
-00022d df34                      	RCALL	SPI_MODE_0
-00022e e014                      	LDI		r17, 0x04 ;exibir no display 4 as unidades dos minutos
-00022f df29                      	RCALL	DISPLAY_OFF
-000230 0000                      	NOP
-000231 df24                      	RCALL	DISPLAY_ON
-000232 2f21                      	MOV		r18, r17
-000233 df34                      	RCALL	SPI_TRANSFER
-000234 2f28                      	MOV		r18, r24 ; r27 <= SPDR (Resposta do SPI) unidade
-000235 0f20                      	ADD		R18, R16	; para exibir os dois pontos
-000236 df31                      	RCALL	SPI_TRANSFER
-000237 df21                      	RCALL	DISPLAY_OFF
+000282 dfdd                      	RCALL	RTC_GET_M ; r24 <= SPDR (Resposta do SPI)
+000283 dfe7                      	RCALL	RTC_GET_H ; r25 <= SPDR (Resposta do SPI)
+000284 df34                      	RCALL	SPI_MODE_0
+000285 e014                      	LDI		r17, 0x04 ;exibir no display 4 as unidades dos minutos
+000286 df29                      	RCALL	DISPLAY_OFF
+000287 0000                      	NOP
+000288 df24                      	RCALL	DISPLAY_ON
+000289 2f21                      	MOV		r18, r17
+00028a df34                      	RCALL	SPI_TRANSFER
+00028b 2f28                      	MOV		r18, r24 ; r27 <= SPDR (Resposta do SPI) unidade
+00028c 0f20                      	ADD		R18, R16	; para exibir os dois pontos
+00028d df31                      	RCALL	SPI_TRANSFER
+00028e df21                      	RCALL	DISPLAY_OFF
                                  	
-000238 9582                      	SWAP	r24 ;Trocar nibbles para exibir a dezena do minuto - Nibble mais significativo é ignorado
-000239 e013                      	LDI		r17, 0x03 ;exibir no display 3 as dezenas dos minutos
-00023a df1b                      	RCALL	DISPLAY_ON
-00023b 2f21                      	MOV		r18, r17
-00023c df2b                      	RCALL	SPI_TRANSFER
-00023d 2f28                      	MOV		r18, r24 ; r27 <= SPDR (Resposta do SPI) unidade
-00023e 0f20                      	ADD		R18, R16	; para exibir os dois pontos
-00023f df28                      	RCALL	SPI_TRANSFER
-000240 df18                      	RCALL	DISPLAY_OFF
+00028f 9582                      	SWAP	r24 ;Trocar nibbles para exibir a dezena do minuto - Nibble mais significativo é ignorado
+000290 e013                      	LDI		r17, 0x03 ;exibir no display 3 as dezenas dos minutos
+000291 df1b                      	RCALL	DISPLAY_ON
+000292 2f21                      	MOV		r18, r17
+000293 df2b                      	RCALL	SPI_TRANSFER
+000294 2f28                      	MOV		r18, r24 ; r27 <= SPDR (Resposta do SPI) unidade
+000295 0f20                      	ADD		R18, R16	; para exibir os dois pontos
+000296 df28                      	RCALL	SPI_TRANSFER
+000297 df18                      	RCALL	DISPLAY_OFF
                                  	
-000241 e012                      	LDI		r17, 0x02 ;exibir no display 2
-000242 df13                      	RCALL	DISPLAY_ON
-000243 2f21                      	MOV		r18, r17
-000244 df23                      	RCALL	SPI_TRANSFER
-000245 2f29                      	MOV		r18, r25
-000246 0f20                      	ADD		R18, R16	; para exibir os dois pontos
-000247 df20                      	RCALL	SPI_TRANSFER
-000248 df10                      	RCALL	DISPLAY_OFF
+000298 e012                      	LDI		r17, 0x02 ;exibir no display 2
+000299 df13                      	RCALL	DISPLAY_ON
+00029a 2f21                      	MOV		r18, r17
+00029b df23                      	RCALL	SPI_TRANSFER
+00029c 2f29                      	MOV		r18, r25
+00029d 0f20                      	ADD		R18, R16	; para exibir os dois pontos
+00029e df20                      	RCALL	SPI_TRANSFER
+00029f df10                      	RCALL	DISPLAY_OFF
                                  	
-000249 9592                      	SWAP	r25 ;Trocar nibbles para exibir a dezena da hora - Nibble mais significativo é ignorado
-00024a e011                      	LDI		r17, 0x01 ;exibir no display 1
-00024b df0a                      	RCALL	DISPLAY_ON
-00024c 2f21                      	MOV		r18, r17
-00024d df1a                      	RCALL	SPI_TRANSFER
-00024e 2f29                      	MOV		r18, r25 ; r27 <= SPDR (Resposta do SPI) unidade
-00024f 0f20                      	ADD		r18, r16	; para exibir os dois pontos
-000250 df17                      	RCALL	SPI_TRANSFER
-000251 df07                      	RCALL	DISPLAY_OFF
-000252 9508                      	RET
+0002a0 9592                      	SWAP	r25 ;Trocar nibbles para exibir a dezena da hora - Nibble mais significativo é ignorado
+0002a1 e011                      	LDI		r17, 0x01 ;exibir no display 1
+0002a2 df0a                      	RCALL	DISPLAY_ON
+0002a3 2f21                      	MOV		r18, r17
+0002a4 df1a                      	RCALL	SPI_TRANSFER
+0002a5 2f29                      	MOV		r18, r25 ; r27 <= SPDR (Resposta do SPI) unidade
+0002a6 0f20                      	ADD		r18, r16	; para exibir os dois pontos
+0002a7 df17                      	RCALL	SPI_TRANSFER
+0002a8 df07                      	RCALL	DISPLAY_OFF
+0002a9 9508                      	RET
                                  ;------------------------------------
                                  
                                  PRINT_MINUTO:
-000253 df0e                      	RCALL	SPI_MODE_0
-000254 e014                      	LDI		r17, 0x04 ;exibir no display 4 as unidades dos minutos
-000255 df03                      	RCALL	DISPLAY_OFF
-000256 0000                      	NOP
-000257 defe                      	RCALL	DISPLAY_ON
-000258 2f21                      	MOV		r18, r17
-000259 df0e                      	RCALL	SPI_TRANSFER
-00025a 2f28                      	MOV		r18, r24 ; unidade do minuto
-00025b df0c                      	RCALL	SPI_TRANSFER
-00025c defc                      	RCALL	DISPLAY_OFF
+0002aa df0e                      	RCALL	SPI_MODE_0
+0002ab e014                      	LDI		r17, 0x04 ;exibir no display 4 as unidades dos minutos
+0002ac df03                      	RCALL	DISPLAY_OFF
+0002ad 0000                      	NOP
+0002ae defe                      	RCALL	DISPLAY_ON
+0002af 2f21                      	MOV		r18, r17
+0002b0 df0e                      	RCALL	SPI_TRANSFER
+0002b1 2f28                      	MOV		r18, r24 ; unidade do minuto
+0002b2 df0c                      	RCALL	SPI_TRANSFER
+0002b3 defc                      	RCALL	DISPLAY_OFF
                                  	
-00025d 9582                      	SWAP	r24 ;Trocar nibbles para exibir a dezena do minuto - Nibble mais significativo é ignorado
-00025e e013                      	LDI		r17, 0x03 ;exibir no display 3 as dezenas dos minutos
-00025f def6                      	RCALL	DISPLAY_ON
-000260 2f21                      	MOV		r18, r17
-000261 df06                      	RCALL	SPI_TRANSFER
-000262 2f28                      	MOV		r18, r24 ; dezena do minuto
-000263 0f20                      	ADD		R18, R16	; para exibir os dois pontos
-000264 df03                      	RCALL	SPI_TRANSFER
-000265 def3                      	RCALL	DISPLAY_OFF
+0002b4 9582                      	SWAP	r24 ;Trocar nibbles para exibir a dezena do minuto - Nibble mais significativo é ignorado
+0002b5 e013                      	LDI		r17, 0x03 ;exibir no display 3 as dezenas dos minutos
+0002b6 def6                      	RCALL	DISPLAY_ON
+0002b7 2f21                      	MOV		r18, r17
+0002b8 df06                      	RCALL	SPI_TRANSFER
+0002b9 2f28                      	MOV		r18, r24 ; dezena do minuto
+0002ba 0f20                      	ADD		R18, R16	; para exibir os dois pontos
+0002bb df03                      	RCALL	SPI_TRANSFER
+0002bc def3                      	RCALL	DISPLAY_OFF
                                  
                                  	;***Desligar display 1 e 2***
-000266 def2                      	RCALL	DISPLAY_OFF
-000267 0000                      	NOP
-000268 deed                      	RCALL	DISPLAY_ON
-000269 e022                      	LDI		r18, 0x02 ;exibir no display 2
-00026a defd                      	RCALL	SPI_TRANSFER
-00026b e72f                      	LDI		r18, 0x7F ;blank
-00026c defb                      	RCALL	SPI_TRANSFER
+0002bd def2                      	RCALL	DISPLAY_OFF
+0002be 0000                      	NOP
+0002bf deed                      	RCALL	DISPLAY_ON
+0002c0 e022                      	LDI		r18, 0x02 ;exibir no display 2
+0002c1 defd                      	RCALL	SPI_TRANSFER
+0002c2 e72f                      	LDI		r18, 0x7F ;blank
+0002c3 defb                      	RCALL	SPI_TRANSFER
                                  
-00026d deeb                      	RCALL	DISPLAY_OFF
-00026e 0000                      	NOP
-00026f dee6                      	RCALL	DISPLAY_ON
-000270 e021                      	LDI		r18, 0x01 ;exibir no display 1
-000271 def6                      	RCALL	SPI_TRANSFER
-000272 e72f                      	LDI		r18, 0x7F ;blank
-000273 def4                      	RCALL	SPI_TRANSFER
-000274 dee4                      	RCALL	DISPLAY_OFF
+0002c4 deeb                      	RCALL	DISPLAY_OFF
+0002c5 0000                      	NOP
+0002c6 dee6                      	RCALL	DISPLAY_ON
+0002c7 e021                      	LDI		r18, 0x01 ;exibir no display 1
+0002c8 def6                      	RCALL	SPI_TRANSFER
+0002c9 e72f                      	LDI		r18, 0x7F ;blank
+0002ca def4                      	RCALL	SPI_TRANSFER
+0002cb dee4                      	RCALL	DISPLAY_OFF
                                  	;----------------------------
-000275 9508                      	RET
+0002cc 9508                      	RET
                                  ;------------------------------------
                                  
                                  PRINT_HORA:
-000276 deeb                      	RCALL	SPI_MODE_0
-000277 e012                      	LDI		r17, 0x02 ;exibir no display 2
-000278 dee0                      	RCALL	DISPLAY_OFF
-000279 0000                      	NOP
-00027a dedb                      	RCALL	DISPLAY_ON
-00027b 2f21                      	MOV		r18, r17
-00027c deeb                      	RCALL	SPI_TRANSFER
-00027d 2f29                      	MOV		r18, r25 ; unidade da hora
-00027e dee9                      	RCALL	SPI_TRANSFER
-00027f ded9                      	RCALL	DISPLAY_OFF
+0002cd deeb                      	RCALL	SPI_MODE_0
+0002ce e012                      	LDI		r17, 0x02 ;exibir no display 2
+0002cf dee0                      	RCALL	DISPLAY_OFF
+0002d0 0000                      	NOP
+0002d1 dedb                      	RCALL	DISPLAY_ON
+0002d2 2f21                      	MOV		r18, r17
+0002d3 deeb                      	RCALL	SPI_TRANSFER
+0002d4 2f29                      	MOV		r18, r25 ; unidade da hora
+0002d5 dee9                      	RCALL	SPI_TRANSFER
+0002d6 ded9                      	RCALL	DISPLAY_OFF
                                  	
-000280 9592                      	SWAP	r25 ;Trocar nibbles para exibir a dezena da hora - Nibble mais significativo é ignorado
-000281 e011                      	LDI		r17, 0x01 ;exibir no display 1
-000282 ded3                      	RCALL	DISPLAY_ON
-000283 2f21                      	MOV		r18, r17
-000284 dee3                      	RCALL	SPI_TRANSFER
-000285 2f29                      	MOV		r18, r25 ; dezena da hora
-000286 dee1                      	RCALL	SPI_TRANSFER
-000287 ded1                      	RCALL	DISPLAY_OFF
+0002d7 9592                      	SWAP	r25 ;Trocar nibbles para exibir a dezena da hora - Nibble mais significativo é ignorado
+0002d8 e011                      	LDI		r17, 0x01 ;exibir no display 1
+0002d9 ded3                      	RCALL	DISPLAY_ON
+0002da 2f21                      	MOV		r18, r17
+0002db dee3                      	RCALL	SPI_TRANSFER
+0002dc 2f29                      	MOV		r18, r25 ; dezena da hora
+0002dd dee1                      	RCALL	SPI_TRANSFER
+0002de ded1                      	RCALL	DISPLAY_OFF
                                  
                                  	;***Desligar display 3 e 4***
-000288 ded0                      	RCALL	DISPLAY_OFF
-000289 0000                      	NOP
-00028a decb                      	RCALL	DISPLAY_ON
-00028b e024                      	LDI		r18, 0x04 ;exibir no display 4
-00028c dedb                      	RCALL	SPI_TRANSFER
-00028d e72f                      	LDI		r18, 0x7F ;blank
-00028e ded9                      	RCALL	SPI_TRANSFER
+0002df ded0                      	RCALL	DISPLAY_OFF
+0002e0 0000                      	NOP
+0002e1 decb                      	RCALL	DISPLAY_ON
+0002e2 e024                      	LDI		r18, 0x04 ;exibir no display 4
+0002e3 dedb                      	RCALL	SPI_TRANSFER
+0002e4 e72f                      	LDI		r18, 0x7F ;blank
+0002e5 ded9                      	RCALL	SPI_TRANSFER
                                  
-00028f dec9                      	RCALL	DISPLAY_OFF
-000290 0000                      	NOP
-000291 dec4                      	RCALL	DISPLAY_ON
-000292 e023                      	LDI		r18, 0x03 ;exibir no display 3
-000293 ded4                      	RCALL	SPI_TRANSFER
-000294 e72f                      	LDI		r18, 0x7F ;blank
-000295 ded2                      	RCALL	SPI_TRANSFER
-000296 dec2                      	RCALL	DISPLAY_OFF
+0002e6 dec9                      	RCALL	DISPLAY_OFF
+0002e7 0000                      	NOP
+0002e8 dec4                      	RCALL	DISPLAY_ON
+0002e9 e023                      	LDI		r18, 0x03 ;exibir no display 3
+0002ea ded4                      	RCALL	SPI_TRANSFER
+0002eb e72f                      	LDI		r18, 0x7F ;blank
+0002ec ded2                      	RCALL	SPI_TRANSFER
+0002ed dec2                      	RCALL	DISPLAY_OFF
                                  	;----------------------------
-000297 9508                      	RET
+0002ee 9508                      	RET
 
 
 RESOURCE USE INFORMATION
@@ -2050,37 +2226,37 @@ counted separately from r26..r31 here.
 "ATmega328P" register use summary:
 x  :   0 y  :   0 z  :   0 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16:  34 r17:  52 r18:  94 r19:   2 r20:   2 
-r21:   0 r22:   2 r23:   4 r24:  23 r25:  28 r26:  12 r27:   0 r28:  13 
-r29:  13 r30:   2 r31:   2 
+r13:   0 r14:   0 r15:   0 r16:  37 r17:  52 r18:  94 r19:   2 r20:   2 
+r21:   0 r22:   2 r23:   4 r24:  23 r25:  28 r26:  12 r27:   0 r28:  14 
+r29:  22 r30:   2 r31:   2 
 Registers used: 14 out of 35 (40.0%)
 
 "ATmega328P" instruction use summary:
 .lds  :   0 .sts  :   0 adc   :   0 add   :   9 adiw  :   0 and   :   0 
 andi  :   0 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
-brcc  :   0 brcs  :   0 break :   0 breq  :  24 brge  :   0 brhc  :   0 
+brcc  :   0 brcs  :   0 break :   0 breq  :  31 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
-brne  :   3 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
-brvs  :   0 bset  :   0 bst   :   0 call  :   4 cbi   :   0 cbr   :   0 
-clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   7 cls   :   0 
+brne  :   5 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
+brvs  :   0 bset  :   0 bst   :   0 call  :   3 cbi   :   0 cbr   :   0 
+clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   8 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   0 cpc   :   0 
-cpi   :  24 cpse  :   0 dec   :   6 eor   :   6 fmul  :   0 fmuls :   0 
+cpi   :  33 cpse  :   1 dec   :   6 eor   :   6 fmul  :   0 fmuls :   0 
 fmulsu:   0 icall :   0 ijmp  :   0 in    :  10 inc   :   5 jmp   :   0 
 ld    :   0 ldd   :   0 ldi   :  88 lds   :   0 lpm   :   0 lsl   :   0 
 lsr   :  16 mov   :  29 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
-neg   :   0 nop   :  25 or    :   0 ori   :   3 out   :  22 pop   :   0 
-push  :   0 rcall : 211 ret   :  59 reti  :   2 rjmp  :  45 rol   :   0 
-ror   :   0 sbc   :   0 sbci  :   0 sbi   :   6 sbic  :  12 sbis  :   3 
+neg   :   0 nop   :  25 or    :   0 ori   :   3 out   :  23 pop   :   0 
+push  :   0 rcall : 240 ret   :  67 reti  :   2 rjmp  :  64 rol   :   0 
+ror   :   0 sbc   :   0 sbci  :   0 sbi   :   6 sbic  :  17 sbis  :  10 
 sbiw  :   0 sbr   :   0 sbrc  :   0 sbrs  :   1 sec   :   0 seh   :   0 
 sei   :   1 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
 sez   :   0 sleep :   0 spm   :   0 st    :   0 std   :   0 sts   :   6 
 sub   :   0 subi  :   3 swap  :   4 tst   :   0 wdr   :   0 
-Instructions used: 28 out of 113 (24.8%)
+Instructions used: 29 out of 113 (25.7%)
 
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x000530   1288      0   1288   32768   3.9%
+[.cseg] 0x000000 0x0005de   1462      0   1462   32768   4.5%
 [.dseg] 0x000100 0x000100      0      0      0    2048   0.0%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 
