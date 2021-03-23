@@ -1,12 +1,4 @@
 ;
-; Programador_horario_v2.asm
-;
-; Created: 22/03/2021 14:08:57
-; Author : lucas
-;
-
-
-;
 ; timer_programador_horario.asm
 ;
 ; Created: 18/03/2021 10:23:24
@@ -25,25 +17,25 @@
 		.INCLUDE "m328Pdef.inc"
 		.org 0x00 
 			rjmp setup_interrupt  
-		.org INT1addr
-			rjmp INT1_vect
+		.org INT0addr
+			rjmp INT0_vect
 		.org 0x34        
 		.org 0x0016 
 			rjmp TIMER1_COMPA
 
 ;********* CONFIG INT. EXTER *****************
 setup_interrupt:
-		ldi r16, (1<<ISC11)|(0<<ISC10)	
+		ldi r16, (1<<ISC01)|(1<<ISC00)	
 		sts EICRA, r16					
 	
-		ldi r16, (1<<INT1)				
+		ldi r16, (1<<INT0)				
 		out EIMSK, r16					
 
-		;ldi r16, (1<<INTF1)
-		;out EIFR, r16
+		ldi r16, (1<<INTF0)
+		out EIFR, r16
 
-		;ldi r16, 0xFF
-		;out DDRB, r16
+		ldi r16, 0xFF
+		out DDRB, r16
 
 		ldi r17, 0b11110111
 		out DDRD, r17
@@ -58,31 +50,27 @@ setup_botoes_led:
 	out DDRC,r17; PCO = R, PC1 = A, PC2 = UP, PC3 = DOWN
 
 	ldi r22, 0b00010000 ; LED T
-	ldi r19, 0b00100000 ; LED W
+	ldi r23, 0b00100000 ; LED W
 	ldi r30, 0b01000000 ; LED O
 	ldi r31, 0b10000000 ; LED F
 ;----------------------------------------------
-;*********** SETUP INÃCIO DO RTC **************
-SETUP_LOOP:
-	LDI		r17, (1<<DDB3) | (1<<DDB5) | (1<<DDB2) | (1<<DDB1) | (1<<DDB0) | (1<<DDB7)
-	OUT		DDRB, r17
+;*********** SETUP INÍCIO DO RTC **************
+		LDI		r24, 0x30 ; 0min.
+		LDI		r25, 0x12 ; 0horas
+		LDI		r26, 0x01 ; DOMINGO
+		RCALL RTC_SETUP	 
 
-	LDI		r24, 0x59 ; 59min.
-	LDI		r25, 0x23 ; 23horas
-	LDI		r26, 0x03 ; TerÃ§a-Feira
-	RCALL RTC_SETUP	; Setup Hora, alarmes e interrupÃ§Ã£o
+		LDI		r24, 0x00 ; 0min.
+		LDI		r25, 0x12 ; 12horas
+		LDI		r26, 0x02 ; Segunda-Feira
+		RCALL	RTC_SETUP_ALARM1
 
-	LDI		r24, 0x00 ; 59min.
-	LDI		r25, 0x00 ; 12horas
-	LDI		r26, 0x04 ; TerÃ§a-Feira
-	RCALL	RTC_SETUP_ALARM1
-
-	LDI		r24, 0x01 ; 59min.
-	LDI		r25, 0x00 ; 12horas
-	LDI		r26, 0x04 ; TerÃ§a-Feira
-	RCALL	RTC_SETUP_ALARM2
-
-	RCALL DISPLAY_SETUP	
+		LDI		r24, 0x00 ; 0min.
+		LDI		r25, 0x12 ; 12horas
+		LDI		r26, 0x03 ; Terça-Feira
+		RCALL	RTC_SETUP_ALARM2
+		
+		RCALL	DISPLAY_SETUP	
 ;--------------------------------------------------
 ;***** CONFIG. TIMER ************************
 	ldi r16, 0x7A											;31250 (HIGH)
@@ -108,40 +96,7 @@ setup_Incrementos:
 ;**************** LOOP PRINCIPAL *****************		
 loop:
 	loop_exec_run:
-		rcall display_normal
-		rcall print_display
-		rcall rtc_get_d
-		out PORTD, r26
-	check_flag:
-		;in r16, PIND3
-		;cpi r16, 0
-		rcall rtc_get_alarms
-		cpi r16, 201
-		breq loop_exec_clr_flag1
-		cpi r16, 202
-		breq loop_exec_clr_flag2
-		rjmp loop_cp_check_buttons
-	loop_exec_clr_flag1:
-	    sbi PORTC, PC5
-		rcall delay
-		;ldi r16, (1<<PB7)
-		;out PORTB, r16
-		sbi PORTC, PC5
-		rcall rtc_reset_alarms
-		rjmp loop_exec_run
-		;rcall delay
-	loop_exec_clr_flag2:
-	    cbi PORTC, PC5
-		rcall delay
-		rcall delay
-		rcall delay
-		rcall delay
-		;ldi r16, (1<<PB0)
-		;out PORTB, r16
-		cbi PORTC, PC5
-		rcall rtc_reset_alarms
-		;rcall delay
-		rjmp check_flag
+		rcall led_run
 	loop_cp_check_buttons:
 		cpi r28, 0
 		brne loop_button_R
@@ -243,37 +198,19 @@ zera_Leds:
 	out PORTD, r16
 	ret
 ;-------------------------------------------------
-;******************** RUN ************************
-run:
-loop_run:
-	rcall rtc_get_M
-	rcall rtc_get_H
-	rcall rtc_get_D
-	rcall print_display
-	rcall led_run
-	rcall delay
-	ldi r17, 0x00
-	sbis PINC, PC0
-	inc r17
-	sbis PINC, PC1
-	inc r17
-	cpi r17, 0x00
-	breq loop_run
-	ret
-;-------------------------------------------------
 ;***************** Timer_H ***********************
 timer_H:
 	sbic PINC, PC0
 	rjmp timer_H
 	rcall zera_Leds
+	rcall rtc_get_H	
 loop_timer_H:
-	rcall rtc_get_H
-	rcall print_hora
-	rcall delay	
 	sbic PINC, PC2
 	rcall seta_cima_H
 	sbic PINC, PC3
 	rcall seta_baixo_H
+ 	rcall rtc_set_H
+	rcall print_hora
 	sbis PINC, PC0
 	rjmp loop_timer_H
 	rcall delay
@@ -285,14 +222,15 @@ timer_M:
 	sbic PINC, PC0
 	rjmp timer_M
 	rcall zera_Leds
-loop_timer_M:
 	rcall rtc_get_M
 	rcall print_minuto
-	rcall delay
+loop_timer_M:
 	sbic PINC, PC2
 	rcall seta_cima_M
 	sbic PINC, PC3
 	rcall seta_baixo_M
+	rcall rtc_set_M
+	rcall print_minuto
 	sbis PINC, PC0
 	rjmp loop_timer_M
 	rcall delay
@@ -305,20 +243,14 @@ Week:
 	rjmp Week
 	rcall zera_Leds
 	ldi r26, 0x01
-	rcall rtc_set_D
+	out PORTB, r26
 loop_Week:
-	rcall rtc_get_D
-	;in r17, PORTD
-	;eor r17, r26
-	out PORTD, r26
-	rcall print_blank
-	rcall led_week
-	rcall delay
-	rcall delay
 	sbic PINC, PC2
 	rcall seta_cima_D
 	sbic PINC, PC3
 	rcall seta_baixo_D
+	rcall rtc_set_D
+	out PORTB, r26
 	sbis PINC, PC0
 	rjmp loop_Week
 	rcall delay
@@ -332,12 +264,12 @@ On_H:
 	rcall zera_Leds
 	rcall rtc_get_H	
 loop_On_H:
-	rcall print_hora
-	rcall delay
 	sbic PINC, PC2
-	rcall seta_cima_H_A
+	rcall seta_cima_H
 	sbic PINC, PC3
-	rcall seta_baixo_H_A
+	rcall seta_baixo_H
+ 	rcall rtc_set_H
+	rcall print_hora
 	sbis PINC, PC1
 	rjmp loop_On_H
 	rcall delay
@@ -349,14 +281,14 @@ On_M:
 	sbic PINC, PC1
 	rjmp On_M
 	rcall zera_Leds
-	rcall rtc_get_M	
+	rcall rtc_get_H	
 loop_On_M:
-	rcall print_minuto
-	rcall delay
 	sbic PINC, PC2
-	rcall seta_cima_M_A
+	rcall seta_cima_H
 	sbic PINC, PC3
-	rcall seta_baixo_M_A
+	rcall seta_baixo_H
+ 	rcall rtc_set_H
+	rcall print_hora
 	sbis PINC, PC1
 	rjmp loop_On_M
 	rcall delay
@@ -368,21 +300,14 @@ Week_On:
 	sbic PINC, PC1
 	rjmp Week_On
 	rcall zera_Leds
-	ldi r26, 0x01
-	rcall rtc_set_D_A1
+	rcall rtc_get_H	
 loop_Week_On:
-	;rcall rtc_get_D_A1
-	;in r17, PORTD
-	;eor r17, r26 
-	out PORTD, r26
-	rcall print_blank
-	rcall led_weekOn
-	rcall delay
-	rcall delay
 	sbic PINC, PC2
-	rcall seta_cima_D_A
+	rcall seta_cima_H
 	sbic PINC, PC3
-	rcall seta_baixo_D_A
+	rcall seta_baixo_H
+ 	rcall rtc_set_H
+	rcall print_hora
 	sbis PINC, PC1
 	rjmp loop_Week_On
 	rcall delay
@@ -396,14 +321,12 @@ Off_H:
 	rcall zera_Leds
 	rcall rtc_get_H	
 loop_Off_H:
-	rcall display_normal
-	rcall print_hora
-	rcall delay
 	sbic PINC, PC2
-	rcall seta_cima_H_A_2
+	rcall seta_cima_H
 	sbic PINC, PC3
-	rcall seta_baixo_H_A_2
- 	;rcall rtc_set_H
+	rcall seta_baixo_H
+ 	rcall rtc_set_H
+	rcall print_hora
 	sbis PINC, PC1
 	rjmp loop_Off_H
 	rcall delay
@@ -415,14 +338,14 @@ Off_M:
 	sbic PINC, PC1
 	rjmp Off_M
 	rcall zera_Leds
-	rcall rtc_get_M	
+	rcall rtc_get_H	
 loop_Off_M:
-	rcall print_minuto
-	rcall delay
 	sbic PINC, PC2
-	rcall seta_cima_M_A_2
+	rcall seta_cima_H
 	sbic PINC, PC3
-	rcall seta_baixo_M_A_2
+	rcall seta_baixo_H
+ 	rcall rtc_set_H
+	rcall print_hora
 	sbis PINC, PC1
 	rjmp loop_Off_M
 	rcall delay
@@ -434,21 +357,14 @@ Week_Off:
 	sbic PINC, PC1
 	rjmp Week_Off
 	rcall zera_Leds
-	ldi r26, 0x01
-	rcall rtc_set_D_A2
+	rcall rtc_get_H	
 loop_Week_Off:
-	;rcall rtc_get_D_A1
-	;in r17, PORTD
-	;eor r17, r26 
-	out PORTD, r26
-	rcall print_blank
-	rcall led_weekOff
-	rcall delay
-	rcall delay
 	sbic PINC, PC2
-	rcall seta_cima_D_A_2
+	rcall seta_cima_H
 	sbic PINC, PC3
-	rcall seta_baixo_D_A_2
+	rcall seta_baixo_H
+ 	rcall rtc_set_H
+	rcall print_hora
 	sbis PINC, PC1
 	rjmp loop_Week_Off
 	rcall delay
@@ -478,7 +394,7 @@ clearA:
 ; LEDS ------------LEDS ------------LEDS----------
 ;***************** led_run ***********************
 led_run:
-	out PORTD, r26 ;
+	out PORTB, r26 ;
 ret
 ;-------------------------------------------------
 ;**************** led_timerH *********************
@@ -489,18 +405,18 @@ led_timerH:
 ;**************** led_timerM *********************
 led_timerM:
 	; TOGGLE LED T
-	in r27, PORTD
-	eor r27, r22
-	out PORTD, r27		
+	in r17, PORTD
+	eor r17, r22
+	out PORTD, r17		
 	ret
 ;-------------------------------------------------
 ;*************** led_Week ************************
 led_Week:
 	sbi PORTD, PD4 ; LIGA O LED T
 	; TOGGLE LED W
-	in r27, PORTD
-	eor r27, r19
-	out PORTD, r27 
+	in r17, PORTD
+	eor r17, r23
+	out PORTD, r17 
 	ret
 ;-------------------------------------------------
 ;***************** led_OnH ***********************
@@ -511,18 +427,18 @@ led_OnH:
 ;***************** led_OnM ***********************
 led_OnM:		
 	; TOGGLE LED O
-	in r27, PORTD
-	eor r27, r30
-	out PORTD, r27 
+	in r17, PORTD
+	eor r17, r30
+	out PORTD, r17 
 	ret
 ;-------------------------------------------------
 ;**************** led_WeekOn *********************
 led_WeekOn:
 	sbi PORTD, PD6 ; LIGA O LED O
 	; TOGGLE LED W
-	in r27, PORTD
-	eor r27, r19
-	out PORTD, r27 
+	in r17, PORTD
+	eor r17, r23
+	out PORTD, r17 
 	ret
 ;-------------------------------------------------
 ;***************** led_OffH **********************
@@ -533,18 +449,18 @@ led_OffH:
 ;***************** led_OffM **********************				
 led_OffM:
 	; TOGGLE LED F
-	in r27, PORTD
-	eor r27, r31
-	out PORTD, r27 
+	in r17, PORTD
+	eor r17, r31
+	out PORTD, r17 
 	ret
 ;-------------------------------------------------
 ;*************** led_WeekOff *********************
 led_WeekOff:
 	sbi PORTD, PD7 ; LIGA O LED F
 	; TOGGLE LED W
-	in r27, PORTD
-	eor r27, r19
-	out PORTD, r27
+	in r17, PORTD
+	eor r17, r23
+	out PORTD, r17
 	ret
 ;-------------------------------------------------
 ;************* led_testaIntervalo ****************
@@ -567,50 +483,47 @@ led_clearA:
 ;-------------------------------------------------
 ;**************** seta_cima_H ********************
 seta_cima_H:
-	rcall delay
 	cpi r25, 0x23
 	breq hora_min
 	rcall soma_Hexa_H
 	rjmp seta_cima_hora_end
 hora_min:
-	ldi r25, 0x00
+	ldi r25, 0x00	
 seta_cima_hora_end:
-	RCALL RTC_SET_H	
+	rcall delay
+	rcall delay
 	ret
 ;-------------------------------------------------
 ;*************** seta_cima_M ********************
 seta_cima_M:
-	rcall delay
 	cpi r24, 0x59
 	breq minuto_min
 	rcall soma_Hexa_M
 	rjmp seta_cima_minuto_end
 minuto_min:
-	ldi r24, 0x00	
+	ldi r25, 0x00	
 seta_cima_minuto_end:
-	RCALL RTC_SET_M
+	rcall delay
+	rcall delay
 	ret
 ;-------------------------------------------------
 ;*************** seta_cima_D ********************
 seta_cima_D:
-	rcall delay
-	rcall delay
-	mov r21, r26
-	andi r21, 0x0F
-	cpi r21, 0x07
+	cpi r26, 0x07
 	breq dia_min
 	inc r26
 	rjmp seta_cima_dia_end
 dia_min:
-	ldi r26, 0x01
+	ldi r25, 0x01	
 seta_cima_dia_end:
 	rcall delay
-	RCALL RTC_SET_D
+	rcall delay
 	ret
 ;-------------------------------------------------
 ;*************** seta_baixo_H ********************
 seta_baixo_H:
-	rcall delay
+	sbic PINC, PC3
+	rjmp seta_baixo_H
 	cpi r25, 0x00
 	breq hora_max
 	rcall subtrai_Hexa_H
@@ -618,229 +531,63 @@ seta_baixo_H:
 hora_max:
 	ldi r25, 0x23	
 seta_baixo_hora_end:
-	RCALL RTC_SET_H
+	;rcall delay
 	ret
 ;-------------------------------------------------
 ;*************** seta_baixo_M ********************
 seta_baixo_M:
-	rcall delay
+	sbic PINC, PC3
+	rjmp seta_baixo_M
 	cpi r24, 0x00
 	breq minuto_max
 	rcall subtrai_Hexa_M
 	rjmp seta_baixo_minuto_end
 minuto_max:
-	ldi r24, 0x59	
+	ldi r25, 0x59	
 seta_baixo_minuto_end:
-	RCALL RTC_SET_M
+	rcall delay
 	ret
 ;-------------------------------------------------
 ;*************** seta_baixo_D ********************
 seta_baixo_D:
-	rcall delay
-	rcall delay
-	mov r21, r26
-	andi r21, 0x0F
-	cpi r21, 0x01
+	sbic PINC, PC3
+	rjmp seta_baixo_D
+	cpi r26, 0x01
 	breq dia_max
 	dec r26
 	rjmp seta_baixo_dia_end
 dia_max:
-	ldi r26, 0x07	
+	ldi r25, 0x07	
 seta_baixo_dia_end:
-	RCALL RTC_SET_D
-	ret
-;-------------------------------------------------
-;**************** seta_cima_H_A ********************
-seta_cima_H_A:
-	rcall delay
-	cpi r25, 0x23
-	breq hora_min_A
-	rcall soma_Hexa_H
-	rjmp seta_cima_hora_end_A
-hora_min_A:
-	ldi r25, 0x00
-seta_cima_hora_end_A:
-	RCALL RTC_SET_H_A1	
-	ret
-;-------------------------------------------------
-;**************** seta_cima_H_A_2 ********************
-seta_cima_H_A_2:
-	rcall delay
-	cpi r25, 0x23
-	breq hora_min_A2
-	rcall soma_Hexa_H
-	rjmp seta_cima_hora_end_A2
-hora_min_A2:
-	ldi r25, 0x00
-seta_cima_hora_end_A2:
-	RCALL RTC_SET_H_A2	
-	ret
-;-------------------------------------------------
-;*************** seta_cima_M_A ********************
-seta_cima_M_A:
-	rcall delay
-	cpi r24, 0x59
-	breq minuto_min_A
-	rcall soma_Hexa_M
-	rjmp seta_cima_minuto_end_A
-minuto_min_A:
-	ldi r24, 0x00	
-seta_cima_minuto_end_A:
-	RCALL RTC_SET_M_A1
-	ret
-;-------------------------------------------------
-;*************** seta_cima_M_A_2 ********************
-seta_cima_M_A_2:
-	rcall delay
-	cpi r24, 0x59
-	breq minuto_min_A2
-	rcall soma_Hexa_M
-	rjmp seta_cima_minuto_end_A2
-minuto_min_A2:
-	ldi r24, 0x00	
-seta_cima_minuto_end_A2:
-	RCALL RTC_SET_M_A2
-	ret
-;-------------------------------------------------
-;*************** seta_cima_D_A ********************
-seta_cima_D_A:
-	rcall delay
-	rcall delay
-	mov r21, r26
-	andi r21, 0x0F
-	cpi r21, 0x07
-	breq dia_min_A
-	inc r26
-	rjmp seta_cima_dia_end_A
-dia_min_A:
-	ldi r26, 0x01	
-seta_cima_dia_end_A:
-	RCALL RTC_SET_D_A1
-	ret
-;-------------------------------------------------
-;*************** seta_cima_D_A_2 ********************
-seta_cima_D_A_2:
-	rcall delay
-	rcall delay
-	mov r21, r26
-	andi r21, 0x0F
-	cpi r21, 0x07
-	breq dia_min_A2
-	inc r26
-	rjmp seta_cima_dia_end_A2
-dia_min_A2:
-	ldi r26, 0x01	
-seta_cima_dia_end_A2:
-	RCALL RTC_SET_D_A2
-	ret
-;-------------------------------------------------
-;*************** seta_baixo_H_A ********************
-seta_baixo_H_A:
-	rcall delay
-	cpi r25, 0x00
-	breq hora_max_A
-	rcall subtrai_Hexa_H
-	rjmp seta_baixo_hora_end_A
-hora_max_A:
-	ldi r25, 0x23	
-seta_baixo_hora_end_A:
-	RCALL RTC_SET_H_A1
-	ret
-;-------------------------------------------------
-;*************** seta_baixo_H_A_2 ********************
-seta_baixo_H_A_2:
-	rcall delay
-	cpi r25, 0x00
-	breq hora_max_A2
-	rcall subtrai_Hexa_H
-	rjmp seta_baixo_hora_end_A2
-hora_max_A2:
-	ldi r25, 0x23	
-seta_baixo_hora_end_A2:
-	RCALL RTC_SET_H_A2
-	ret
-;-------------------------------------------------
-;*************** seta_baixo_M_A ********************
-seta_baixo_M_A:
-	rcall delay
-	cpi r24, 0x00
-	breq minuto_max_A
-	rcall subtrai_Hexa_M
-	rjmp seta_baixo_minuto_end_A
-minuto_max_A:
-	ldi r24, 0x59	
-seta_baixo_minuto_end_A:
-	RCALL RTC_SET_M_A1
-	ret
-;-------------------------------------------------
-;*************** seta_baixo_M_A_2 ********************
-seta_baixo_M_A_2:
-	rcall delay
-	cpi r24, 0x00
-	breq minuto_max_A2
-	rcall subtrai_Hexa_M
-	rjmp seta_baixo_minuto_end_A2
-minuto_max_A2:
-	ldi r24, 0x59	
-seta_baixo_minuto_end_A2:
-	RCALL RTC_SET_M_A2
-	ret
-;-------------------------------------------------
-;*************** seta_baixo_D_A ********************
-seta_baixo_D_A:
-	rcall delay
-	rcall delay
-	mov r21, r26
-	andi r21, 0x0F
-	cpi r21, 0x01
-	breq dia_max_A
-	dec r26
-	rjmp seta_baixo_dia_end_A
-dia_max_A:
-	ldi r26, 0x07	
-seta_baixo_dia_end_A:
-	RCALL RTC_SET_D_A1
-	rcall delay
-	ret
-;-------------------------------------------------
-;*************** seta_baixo_D_A_2 ********************
-seta_baixo_D_A_2:
-	rcall delay
-	rcall delay
-	mov r21, r26
-	andi r21, 0x0F
-	cpi r21, 0x01
-	breq dia_max_A2
-	dec r26
-	rjmp seta_baixo_dia_end_A2
-dia_max_A2:
-	ldi r26, 0x07	
-seta_baixo_dia_end_A2:
-	RCALL RTC_SET_D_A2
 	rcall delay
 	ret
 ;-------------------------------------------------
 ;*************** soma_hexa_H *********************
 soma_hexa_H:
-	mov r21, r25
-	andi r21, 0x0F
-	cpi r21, 0x09
+	mov r18, r25
+	lsr	r18
+	lsr	r18
+	lsr	r18
+	lsr	r18
+	cpi r18, 0x90 
 	breq MSH_H
 	inc r25
 	rjmp soma_hexa_hora_end
 MSH_H:
-	ldi r16, 0x10
+	ldi r16, 0x07
 	add r25, r16
-	subi r25, 0x09
+	
 soma_hexa_hora_end:
-	rcall delay
 	ret
 ;-------------------------------------------------
 ;*************** soma_hexa_M *********************
 soma_hexa_M:
-	mov r21, r24
-	andi r21, 0x0F
-	cpi r21, 0x09
+	mov r18, r24
+	lsr	r18
+	lsr	r18
+	lsr	r18
+	lsr	r18
+	cpi r18, 0x90
 	breq MSH_M
 	inc r24
 	rjmp soma_hexa_minuto_end
@@ -849,14 +596,16 @@ MSH_M:
 	add r24, r16
 	subi r24, 0x09
 soma_hexa_minuto_end:
-	rcall delay
 	ret
 ;-------------------------------------------------
 ;*************** subtrai_hexa_H ******************
 subtrai_hexa_H:
-	mov r21, r25
-	andi r21, 0x0F
-	cpi r21, 0x00
+	mov r18, r25
+	lsr	r18
+	lsr	r18
+	lsr	r18
+	lsr	r18
+	cpi r18, 0x00
 	breq LSH_H
 	dec r25
 	rjmp subtrai_hexa_hora_end
@@ -865,14 +614,16 @@ LSH_H:
 	ldi  r16, 0x09
 	add  r25, r16
 subtrai_hexa_hora_end:
-	rcall delay
 	ret
 ;-------------------------------------------------
 ;*************** subtrai_hexa_M ******************
 subtrai_hexa_M:
-	mov r21, r24
-	andi r21, 0x0F
-	cpi r21, 0x00
+	mov r18, r24
+	lsr	r18
+	lsr	r18
+	lsr	r18
+	lsr	r18
+	cpi r18, 0x00
 	breq LSH_M
 	dec r24
 	rjmp subtrai_hexa_minuto_end
@@ -881,11 +632,10 @@ LSH_M:
 	ldi	r16, 0x09
 	add r24, r16
 subtrai_hexa_minuto_end:
-	rcall delay
 	ret
 ;-------------------------------------------------
 
-;************** VETOR INTERRUPÃ‡Ã‚O ****************
+;************** VETOR INTERRUPÇÂO ****************
 TIMER1_COMPA:
 	t_cp_OnH:
 		cpi r29, 1
@@ -958,28 +708,24 @@ TIMER1_COMPA:
 		reti
 ;-------------------------------------------------
 
-;****** INTERRUPÃ‡ÃƒO EXTERNA NO PIN D3 ***************
-INT1_vect:
-    ;rcall rtc_reset_alarms
-	;in r17, PORTB
-	;eor r17, r16
-	;out PORTB, r17
-	;reti
+;****** INTERRUPÇÃO EXTERNA NO PIN D2 ***************
+INT0_vect:
+	;call led_OnM
 reti
-;******* FIM DE INTERRUPÃ‡ÃƒO EXTERNA NO PIN D2 *************
+;******* FIM DE INTERRUPÇÃO EXTERNA NO PIN D2 *************
 
 
 ;************* DELAY *****************************
 delay:	
-	ldi  r17, 10
-    ldi  r18, 255
+	ldi  r18, 10
+    ldi  r19, 255
 	ldi  r20, 255
 
 L1: dec  r20
     brne L1
-	dec  r18
+	dec  r19
     brne L1
-    dec  r17
+    dec  r18
     brne L1
 
 	ret
@@ -1105,7 +851,7 @@ RTC_SET_CONTROL_REGISTER:
 	RCALL	RTC_ON
 	LDI		r18, 0x8E ;CMD Set minutes
 	RCALL	SPI_TRANSFER
-	LDI		r18, 0x07 ;Set Flag alarm 1 e 2 e habilita interrupÃ§Ã£o.
+	LDI		r18, 0x07 ;Set Flag alarm 1 e 2 e habilita interrupção.
 	RCALL	SPI_TRANSFER
 	RCALL	RTC_OFF
 	RET
@@ -1119,23 +865,8 @@ RTC_RESET_ALARMS:
 	RCALL	RTC_ON
 	LDI		r18, 0x8F ;CMD Set minutes
 	RCALL	SPI_TRANSFER
-	LDI		r18, 0xC8 ;Set Flag alarm 1 e 2 e habilita interrupÃ§Ã£o.
+	LDI		r18, 0xC8 ;Set Flag alarm 1 e 2 e habilita interrupção.
 	RCALL	SPI_TRANSFER
-	RCALL	RTC_OFF
-	RET
-;------------------------------------
-;************************************
-RTC_GET_ALARMS:
-	RCALL	SPI_MODE_1
-	RCALL	RTC_OFF
-	NOP
-	RCALL	RTC_ON
-	LDI		r18, 0x0F ;CMD Set minutes
-	RCALL	SPI_TRANSFER
-	LDI		r18, 0xFF ;DUMMY BYTE - RESPONSE MINUTO.
-	RCALL	SPI_TRANSFER
-	in		r16, SPDR ;Set Flag alarm 1 e 2 e habilita interrupÃ§Ã£o.
-	;RCALL	SPI_TRANSFER
 	RCALL	RTC_OFF
 	RET
 ;------------------------------------
@@ -1319,97 +1050,70 @@ PRINT_DISPLAY:
 
 	RCALL	RTC_GET_M ; r24 <= SPDR (Resposta do SPI)
 	RCALL	RTC_GET_H ; r25 <= SPDR (Resposta do SPI)
-	rcall rtc_get_d
 	RCALL	SPI_MODE_0
-	LDI		r23, 0x04 ;exibir no display 4 as unidades dos minutos
+	LDI		r17, 0x04 ;exibir no display 4 as unidades dos minutos
 	RCALL	DISPLAY_OFF
 	NOP
 	RCALL	DISPLAY_ON
-	MOV		r18, r23
+	MOV		r18, r17
 	RCALL	SPI_TRANSFER
 	MOV		r18, r24 ; r27 <= SPDR (Resposta do SPI) unidade
 	ADD		R18, R16	; para exibir os dois pontos
 	RCALL	SPI_TRANSFER
 	RCALL	DISPLAY_OFF
 	
-	SWAP	r24 ;Trocar nibbles para exibir a dezena do minuto - Nibble mais significativo Ã© ignorado
-	LDI		r23, 0x03 ;exibir no display 3 as dezenas dos minutos
+	SWAP	r24 ;Trocar nibbles para exibir a dezena do minuto - Nibble mais significativo é ignorado
+	LDI		r17, 0x03 ;exibir no display 3 as dezenas dos minutos
 	RCALL	DISPLAY_ON
-	MOV		r18, r23
+	MOV		r18, r17
 	RCALL	SPI_TRANSFER
 	MOV		r18, r24 ; r27 <= SPDR (Resposta do SPI) unidade
 	ADD		R18, R16	; para exibir os dois pontos
 	RCALL	SPI_TRANSFER
 	RCALL	DISPLAY_OFF
-	SWAP	r24 ;Trocar nibbles para exibir a dezena do minuto - Nibble mais significativo Ã© ignorado
 	
-	LDI		r23, 0x02 ;exibir no display 2
+	LDI		r17, 0x02 ;exibir no display 2
 	RCALL	DISPLAY_ON
-	MOV		r18, r23
+	MOV		r18, r17
 	RCALL	SPI_TRANSFER
 	MOV		r18, r25
 	ADD		R18, R16	; para exibir os dois pontos
 	RCALL	SPI_TRANSFER
 	RCALL	DISPLAY_OFF
 	
-	SWAP	r25 ;Trocar nibbles para exibir a dezena da hora - Nibble mais significativo Ã© ignorado
-	LDI		r23, 0x01 ;exibir no display 1
+	SWAP	r25 ;Trocar nibbles para exibir a dezena da hora - Nibble mais significativo é ignorado
+	LDI		r17, 0x01 ;exibir no display 1
 	RCALL	DISPLAY_ON
-	MOV		r18, r23
+	MOV		r18, r17
 	RCALL	SPI_TRANSFER
 	MOV		r18, r25 ; r27 <= SPDR (Resposta do SPI) unidade
 	ADD		r18, r16	; para exibir os dois pontos
 	RCALL	SPI_TRANSFER
 	RCALL	DISPLAY_OFF
-	SWAP	r25 ;Trocar nibbles para exibir a dezena da hora - Nibble mais significativo Ã© ignorado
 	RET
-;------------------------------------
-;************************************
-PRINT_BLANK:
-rcall spi_mode_0
-rcall display_on
-ldi r18, 0x0C
-rcall spi_transfer
-ldi r18, 0x00
-rcall spi_transfer
-rcall display_off
-ret
-;------------------------------------
-
-;************************************
-display_normal:
-	rcall spi_mode_0
-	rcall display_on
-	ldi r18, 0x0C
-	rcall spi_transfer
-	ldi r18, 0x01
-	rcall spi_transfer
-	rcall display_off
-	ret
 ;------------------------------------
 
 PRINT_MINUTO:
 	RCALL	SPI_MODE_0
-	LDI		r23, 0x04 ;exibir no display 4 as unidades dos minutos
+	LDI		r17, 0x04 ;exibir no display 4 as unidades dos minutos
 	RCALL	DISPLAY_OFF
 	NOP
 	RCALL	DISPLAY_ON
-	MOV		r18, r23
+	MOV		r18, r17
 	RCALL	SPI_TRANSFER
 	MOV		r18, r24 ; unidade do minuto
 	RCALL	SPI_TRANSFER
 	RCALL	DISPLAY_OFF
 	
-	SWAP	r24 ;Trocar nibbles para exibir a dezena do minuto - Nibble mais significativo Ã© ignorado
-	LDI		r23, 0x03 ;exibir no display 3 as dezenas dos minutos
+	SWAP	r24 ;Trocar nibbles para exibir a dezena do minuto - Nibble mais significativo é ignorado
+	LDI		r17, 0x03 ;exibir no display 3 as dezenas dos minutos
 	RCALL	DISPLAY_ON
-	MOV		r18, r23
+	MOV		r18, r17
 	RCALL	SPI_TRANSFER
 	MOV		r18, r24 ; dezena do minuto
 	ADD		R18, R16	; para exibir os dois pontos
 	RCALL	SPI_TRANSFER
 	RCALL	DISPLAY_OFF
-	SWAP	r24 ;Trocar nibbles para exibir a dezena do minuto - Nibble mais significativo Ã© ignorado
 
 	;***Desligar display 1 e 2***
 	RCALL	DISPLAY_OFF
@@ -1434,25 +1138,24 @@ PRINT_MINUTO:
 
 PRINT_HORA:
 	RCALL	SPI_MODE_0
-	LDI		r23, 0x02 ;exibir no display 2
+	LDI		r17, 0x02 ;exibir no display 2
 	RCALL	DISPLAY_OFF
 	NOP
 	RCALL	DISPLAY_ON
-	MOV		r18, r23
+	MOV		r18, r17
 	RCALL	SPI_TRANSFER
 	MOV		r18, r25 ; unidade da hora
 	RCALL	SPI_TRANSFER
 	RCALL	DISPLAY_OFF
 	
-	SWAP	r25 ;Trocar nibbles para exibir a dezena da hora - Nibble mais significativo Ã© ignorado
-	LDI		r23, 0x01 ;exibir no display 1
+	SWAP	r25 ;Trocar nibbles para exibir a dezena da hora - Nibble mais significativo é ignorado
+	LDI		r17, 0x01 ;exibir no display 1
 	RCALL	DISPLAY_ON
-	MOV		r18, r23
+	MOV		r18, r17
 	RCALL	SPI_TRANSFER
 	MOV		r18, r25 ; dezena da hora
 	RCALL	SPI_TRANSFER
 	RCALL	DISPLAY_OFF
-	SWAP	r25 ;Trocar nibbles para exibir a dezena da hora - Nibble mais significativo Ã© ignorado
 
 	;***Desligar display 3 e 4***
 	RCALL	DISPLAY_OFF
@@ -1474,3 +1177,4 @@ PRINT_HORA:
 	;----------------------------
 	RET
 ;------------------------------------
+

@@ -1,0 +1,180 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.2.8</VERSION>
+ <DEVICE>"ATmega328P"</DEVICE>
+ <WORKING_DIR>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\Debug</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc</DIR>
+  <DIR>C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avrassembler\Include</DIR>
+  <DIR></DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc\m328Pdef.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\Debug\Leds.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>Leds.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>Leds.map</FILE>
+  <FILE>Leds.lss</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <setup_interrupt><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>27</LINE></setup_interrupt>
+  <INT0_vect><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>712</LINE></INT0_vect>
+  <TIMER1_COMPA><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>639</LINE></TIMER1_COMPA>
+  <setup_botoes_led><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>44</LINE></setup_botoes_led>
+  <RTC_SETUP><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>822</LINE></RTC_SETUP>
+  <RTC_SETUP_ALARM1><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>831</LINE></RTC_SETUP_ALARM1>
+  <RTC_SETUP_ALARM2><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>839</LINE></RTC_SETUP_ALARM2>
+  <DISPLAY_SETUP><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>787</LINE></DISPLAY_SETUP>
+  <setup_Incrementos><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>90</LINE></setup_Incrementos>
+  <loop><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>97</LINE></loop>
+  <loop_exec_run><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>98</LINE></loop_exec_run>
+  <led_run><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>396</LINE></led_run>
+  <loop_cp_check_buttons><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>100</LINE></loop_cp_check_buttons>
+  <loop_button_R><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>106</LINE></loop_button_R>
+  <loop_button_A><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>112</LINE></loop_button_A>
+  <loop_exec_check_buttons><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>105</LINE></loop_exec_check_buttons>
+  <incrementeA><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>180</LINE></incrementeA>
+  <cp_timer_H><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>116</LINE></cp_timer_H>
+  <incrementeB><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>188</LINE></incrementeB>
+  <exec_timer_H><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>120</LINE></exec_timer_H>
+  <cp_timer_M><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>122</LINE></cp_timer_M>
+  <timer_H><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>202</LINE></timer_H>
+  <exec_timer_M><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>126</LINE></exec_timer_M>
+  <cp_Week><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>128</LINE></cp_Week>
+  <timer_M><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>221</LINE></timer_M>
+  <exec_Week><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>132</LINE></exec_Week>
+  <cp_On_H><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>134</LINE></cp_On_H>
+  <Week><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>241</LINE></Week>
+  <exec_On_H><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>138</LINE></exec_On_H>
+  <cp_On_M><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>140</LINE></cp_On_M>
+  <On_H><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>261</LINE></On_H>
+  <exec_On_M><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>144</LINE></exec_On_M>
+  <cp_Week_On><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>146</LINE></cp_Week_On>
+  <On_M><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>280</LINE></On_M>
+  <exec_Week_On><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>150</LINE></exec_Week_On>
+  <cp_Off_H><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>152</LINE></cp_Off_H>
+  <Week_On><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>299</LINE></Week_On>
+  <exec_Off_H><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>156</LINE></exec_Off_H>
+  <cp_Off_M><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>158</LINE></cp_Off_M>
+  <Off_H><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>318</LINE></Off_H>
+  <exec_Off_M><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>162</LINE></exec_Off_M>
+  <cp_Week_Off><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>164</LINE></cp_Week_Off>
+  <Off_M><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>337</LINE></Off_M>
+  <exec_Week_Off><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>168</LINE></exec_Week_Off>
+  <cp_testaIntervalo><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>170</LINE></cp_testaIntervalo>
+  <Week_Off><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>356</LINE></Week_Off>
+  <exec_testaIntervalo><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>174</LINE></exec_testaIntervalo>
+  <end_loop><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>176</LINE></end_loop>
+  <testaIntervalo><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>375</LINE></testaIntervalo>
+  <delay><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>719</LINE></delay>
+  <zera_Leds><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>196</LINE></zera_Leds>
+  <rtc_get_H><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>1018</LINE></rtc_get_H>
+  <loop_timer_H><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>207</LINE></loop_timer_H>
+  <seta_cima_H><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>485</LINE></seta_cima_H>
+  <seta_baixo_H><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>524</LINE></seta_baixo_H>
+  <rtc_set_H><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>917</LINE></rtc_set_H>
+  <print_hora><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>1139</LINE></print_hora>
+  <rtc_get_M><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>1003</LINE></rtc_get_M>
+  <print_minuto><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>1096</LINE></print_minuto>
+  <loop_timer_M><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>227</LINE></loop_timer_M>
+  <seta_cima_M><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>498</LINE></seta_cima_M>
+  <seta_baixo_M><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>538</LINE></seta_baixo_M>
+  <rtc_set_M><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>875</LINE></rtc_set_M>
+  <loop_Week><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>247</LINE></loop_Week>
+  <seta_cima_D><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>511</LINE></seta_cima_D>
+  <seta_baixo_D><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>552</LINE></seta_baixo_D>
+  <rtc_set_D><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>959</LINE></rtc_set_D>
+  <loop_On_H><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>266</LINE></loop_On_H>
+  <loop_On_M><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>285</LINE></loop_On_M>
+  <loop_Week_On><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>304</LINE></loop_Week_On>
+  <loop_Off_H><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>323</LINE></loop_Off_H>
+  <loop_Off_M><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>342</LINE></loop_Off_M>
+  <loop_Week_Off><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>361</LINE></loop_Week_Off>
+  <loop_testaIntervalo><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>378</LINE></loop_testaIntervalo>
+  <clearR><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>385</LINE></clearR>
+  <led_clearR><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>473</LINE></led_clearR>
+  <clearA><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>390</LINE></clearA>
+  <led_clearA><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>479</LINE></led_clearA>
+  <led_timerH><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>401</LINE></led_timerH>
+  <led_timerM><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>406</LINE></led_timerM>
+  <led_Week><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>414</LINE></led_Week>
+  <led_OnH><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>423</LINE></led_OnH>
+  <led_OnM><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>428</LINE></led_OnM>
+  <led_WeekOn><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>436</LINE></led_WeekOn>
+  <led_OffH><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>445</LINE></led_OffH>
+  <led_OffM><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>450</LINE></led_OffM>
+  <led_WeekOff><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>458</LINE></led_WeekOff>
+  <led_testaIntervalo><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>467</LINE></led_testaIntervalo>
+  <hora_min><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>490</LINE></hora_min>
+  <soma_Hexa_H><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>566</LINE></soma_Hexa_H>
+  <seta_cima_hora_end><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>492</LINE></seta_cima_hora_end>
+  <minuto_min><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>503</LINE></minuto_min>
+  <soma_Hexa_M><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>584</LINE></soma_Hexa_M>
+  <seta_cima_minuto_end><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>505</LINE></seta_cima_minuto_end>
+  <dia_min><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>516</LINE></dia_min>
+  <seta_cima_dia_end><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>518</LINE></seta_cima_dia_end>
+  <hora_max><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>531</LINE></hora_max>
+  <subtrai_Hexa_H><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>602</LINE></subtrai_Hexa_H>
+  <seta_baixo_hora_end><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>533</LINE></seta_baixo_hora_end>
+  <minuto_max><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>545</LINE></minuto_max>
+  <subtrai_Hexa_M><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>620</LINE></subtrai_Hexa_M>
+  <seta_baixo_minuto_end><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>547</LINE></seta_baixo_minuto_end>
+  <dia_max><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>559</LINE></dia_max>
+  <seta_baixo_dia_end><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>561</LINE></seta_baixo_dia_end>
+  <MSH_H><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>576</LINE></MSH_H>
+  <soma_hexa_hora_end><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>580</LINE></soma_hexa_hora_end>
+  <MSH_M><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>594</LINE></MSH_M>
+  <soma_hexa_minuto_end><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>598</LINE></soma_hexa_minuto_end>
+  <LSH_H><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>612</LINE></LSH_H>
+  <subtrai_hexa_hora_end><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>616</LINE></subtrai_hexa_hora_end>
+  <LSH_M><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>630</LINE></LSH_M>
+  <subtrai_hexa_minuto_end><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>634</LINE></subtrai_hexa_minuto_end>
+  <t_cp_OnH><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>640</LINE></t_cp_OnH>
+  <t_exec_OnH><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>644</LINE></t_exec_OnH>
+  <t_cp_OnM><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>646</LINE></t_cp_OnM>
+  <t_exec_OnM><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>650</LINE></t_exec_OnM>
+  <t_cp_WeekOn><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>652</LINE></t_cp_WeekOn>
+  <t_exec_WeekOn><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>656</LINE></t_exec_WeekOn>
+  <t_cp_OffH><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>658</LINE></t_cp_OffH>
+  <t_exec_OffH><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>662</LINE></t_exec_OffH>
+  <t_cp_OffM><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>664</LINE></t_cp_OffM>
+  <t_exec_OffM><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>668</LINE></t_exec_OffM>
+  <t_cp_WeekOff><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>670</LINE></t_cp_WeekOff>
+  <t_exec_WeekOff><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>674</LINE></t_exec_WeekOff>
+  <t_cp_testaIntervalo><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>676</LINE></t_cp_testaIntervalo>
+  <t_exec_testaIntervalo><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>680</LINE></t_exec_testaIntervalo>
+  <t_cp_timerH><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>683</LINE></t_cp_timerH>
+  <t_exec_timerH><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>687</LINE></t_exec_timerH>
+  <t_cp_timerM><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>689</LINE></t_cp_timerM>
+  <t_exec_timerM><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>693</LINE></t_exec_timerM>
+  <t_cp_Week><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>695</LINE></t_cp_Week>
+  <t_exec_Week><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>699</LINE></t_exec_Week>
+  <t_cp_clearR><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>701</LINE></t_cp_clearR>
+  <t_exec_clearR><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>705</LINE></t_exec_clearR>
+  <t_fim><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>707</LINE></t_fim>
+  <L1><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>724</LINE></L1>
+  <DISPLAY_ON><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>735</LINE></DISPLAY_ON>
+  <DISPLAY_OFF><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>742</LINE></DISPLAY_OFF>
+  <RTC_ON><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>749</LINE></RTC_ON>
+  <RTC_OFF><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>756</LINE></RTC_OFF>
+  <SPI_MODE_0><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>763</LINE></SPI_MODE_0>
+  <SPI_MODE_1><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>770</LINE></SPI_MODE_1>
+  <SPI_TRANSFER><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>777</LINE></SPI_TRANSFER>
+  <SPI_WAIT_TRANSFER><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>779</LINE></SPI_WAIT_TRANSFER>
+  <RTC_SET_CONTROL_REGISTER><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>847</LINE></RTC_SET_CONTROL_REGISTER>
+  <RTC_SET_M_A1><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>889</LINE></RTC_SET_M_A1>
+  <RTC_SET_H_A1><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>931</LINE></RTC_SET_H_A1>
+  <RTC_SET_D_A1><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>973</LINE></RTC_SET_D_A1>
+  <RTC_SET_M_A2><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>903</LINE></RTC_SET_M_A2>
+  <RTC_SET_H_A2><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>945</LINE></RTC_SET_H_A2>
+  <RTC_SET_D_A2><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>988</LINE></RTC_SET_D_A2>
+  <RTC_RESET_ALARMS><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>861</LINE></RTC_RESET_ALARMS>
+  <RTC_GET_D><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>1033</LINE></RTC_GET_D>
+  <PRINT_DISPLAY><FILE>C:\Users\vnaze\Desktop\Programador Horário\Leds\Leds\main.asm</FILE><LINE>1048</LINE></PRINT_DISPLAY>
+ </LABELS>
+</ASSEMBLER_INFO>

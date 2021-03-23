@@ -11,9 +11,9 @@
     <OutputFileExtension>.obj</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
     <Language>ASSEMBLY</Language>
-    <AssemblyName>ProgramadorHorárioSD</AssemblyName>
-    <Name>ProgramadorHorárioSD</Name>
-    <RootNamespace>ProgramadorHorárioSD</RootNamespace>
+    <AssemblyName>Leds</AssemblyName>
+    <Name>Leds</Name>
+    <RootNamespace>Leds</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <EntryFile>$(MSBuildProjectDirectory)\main.asm</EntryFile>
     <KeepTimersRunning>true</KeepTimersRunning>
@@ -28,18 +28,6 @@
     <ResetRule>0</ResetRule>
     <eraseonlaunchrule>0</eraseonlaunchrule>
     <EraseKey />
-    <AsfFrameworkConfig>
-      <framework-data xmlns="">
-  <options />
-  <configurations />
-  <files />
-  <documentation help="" />
-  <offline-documentation help="" />
-  <dependencies>
-    <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.49.1" />
-  </dependencies>
-</framework-data>
-    </AsfFrameworkConfig>
     <avrtool>com.atmel.avrdbg.tool.simulator</avrtool>
     <avrtoolserialnumber />
     <avrdeviceexpectedsignature>0x1E950F</avrdeviceexpectedsignature>
